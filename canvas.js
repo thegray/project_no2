@@ -1,74 +1,63 @@
-let x = 100,
-  y = 100,
-  angle1 = 0.0,
-  segLength = 50,
-  playerX = 200,
-  playerY = 200,
-  msSpeed = 2,
-  radius = 20,
-  canvasWidth, 
-  canvasHeight;
+let X = 0.0,
+  Y = 0.0,
+  PX = 500,
+  PY = 500,
+  MS_SPEED = 2,
+  CHAR_RADIUS = 20,
+  CURSOR_LENGTH = 25.0,
+  CANVAS_WIDTH, CANVAS_HEIGHT;
   
 
 function setup() {
-  canvasWidth = 1024; //windowWidth; 
-  canvasHeight = 800; //windowHeight;
-  createCanvas(canvasWidth, canvasHeight);
-  strokeWeight(radius);
-  stroke(255, 100);
+  CANVAS_WIDTH = 1024; //windowWidth; 
+  CANVAS_HEIGHT = 800; //windowHeight;
+  createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+  // strokeWeight(CHAR_RADIUS);
+  // stroke(255, 100);
 }
 
 function draw() {
   background(0);
 
-  dx = mouseX - x;
-  dy = mouseY - y;
-  angle1 = atan2(dy, dx);
-  x = mouseX - cos(angle1) * segLength;
-  y = mouseY - sin(angle1) * segLength;
+  targetAngle = atan2(mouseY - PY, mouseX - PX);
 
-  // _segment(x, y, angle1);
-  // _segment2(playerX, playerY, angle1);
-  ellipse(playerX, playerY, radius, radius);
+  drawChar(PX, PY, targetAngle)
 
   updateController();
 }
 
-// function _segment(x, y, a) {
-//   push();
-//   translate(x, y);
-//   rotate(a);
-//   line(x, y, segLength, 0);
-//   pop();
-// }
+function drawChar(_px, _py, _angle) {
+  drawLine(_px, _py, _angle);
+  ellipse(_px, _py, CHAR_RADIUS, CHAR_RADIUS);
+}
 
-function _segment2(px, py, a) {
-  push();
-  translate(px, py);
-  rotate(a);
-  line(10, 10, 30, 30);
-  pop();
+function drawLine(sx, sy, angle) {
+  strokeWeight(3);
+	stroke(color(255, 0, 0)); 
+  //direction facing the mouse
+	line(sx, sy, sx + cos(angle) * CURSOR_LENGTH, 
+    sy + sin(angle) * CURSOR_LENGTH);
 }
 
 function updateController() {
   if (keyIsDown(87)) { // w
-    if (playerY > radius) {
-      playerY -= msSpeed;
+    if (PY > CHAR_RADIUS) {
+      PY -= MS_SPEED;
     }
   }
   if (keyIsDown(65)) { // a
-    if (playerX > radius) {
-      playerX -= msSpeed;
+    if (PX > CHAR_RADIUS) {
+      PX -= MS_SPEED;
     }
   }
   if (keyIsDown(83)) { // s
-    if (playerY < canvasHeight-radius) {
-      playerY += msSpeed;
+    if (PY < CANVAS_HEIGHT-CHAR_RADIUS) {
+      PY += MS_SPEED;
     }
   }
   if (keyIsDown(68)) { // d
-    if (playerX < canvasWidth-radius) {
-      playerX += msSpeed;
+    if (PX < CANVAS_WIDTH-CHAR_RADIUS) {
+      PX += MS_SPEED;
     }
   }
 }
