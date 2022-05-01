@@ -1,14 +1,41 @@
-<html>
-  <head>
-    <script src="lib/p5.min.js"></script>
-    <script src="lib/p5.collide2d.min.js"></script>
-    <script src="canvas.js"></script>
-    <script src="bullet.js"></script>
-    <script src="character.js"></script>
-    <script src="ui.js"></script>
-  </head>
-  <body>
-    <main>
-    </main>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Login Form with validation Example</title>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"> -->
+  <link rel="stylesheet" href="style.css">
+  <script>
+    window.onload = function () {
+      var joinBtn = document.getElementById('joinBtn');
+      var nameInput = document.getElementById("nameInput");
+      joinBtn.onclick = function () {
+        console.log(nameInput.value)
+        sessionStorage.setItem("nickname", nameInput.value);
+        window.location.href = "http://localhost:8080/game";
+      };
+    };
+  </script>
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <div id="login-form-wrap">
+    <h2>Join Game</h2>
+    <div id="login-form">
+      <p>
+        <input type="text" id="nameInput" name="name" placeholder="name" required>
+        <i class="validation"></i>
+      </p>
+      <p>
+        <input type="submit" id="joinBtn" value="join">
+      </p>
+    </div>
+  </div>
+  <!--login-form-wrap-->
+  <!-- partial -->
+
+</body>
+
 </html>

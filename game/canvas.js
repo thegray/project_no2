@@ -4,15 +4,15 @@ let MS_SPEED = 2,
 
 let bulletsFired = [];
 let mainChar;
-let characters = [];
+let Characters = [];
 
 function charactersUpdate() {
     mainChar.update();
 }
 
 function charactersRender() {
-    for (var i = 0; i < characters.length; i++) {
-        characters[i].display();
+    for (var i = 0; i < Characters.length; i++) {
+        Characters[i].display();
     }
 }
 
@@ -22,8 +22,8 @@ function bulletsUpdate() {
         if (bulletsFired[i].outOfBounds()) {
             bulletsFired.splice(i, 1);
         }
-        else if (bulletsFired[i].hitScan()){
-        	bulletsFired.splice(i,1);
+        else if (bulletsFired[i].hitScan()) {
+            bulletsFired.splice(i, 1);
         }
     }
 }
@@ -52,15 +52,6 @@ function setup() {
     initObjects();
 }
 
-function initObjects() {
-    mainChar = new character(400, 400, CHAR_RADIUS, MS_SPEED, 0, color(255, 0, 0));
-    characters.push(mainChar);
-    testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
-    characters.push(testChar);
-    testChar2 = new character(300, 300, CHAR_RADIUS, MS_SPEED, 2, color(0, 0, 255));
-    characters.push(testChar2);
-}
-
 function update() {
     updateController();
     charactersUpdate();
@@ -77,6 +68,13 @@ function render() {
 function draw() {
     update();
     render();
+}
+
+function initObjects() {
+    mainChar = new character();
+    // characters.push(mainChar);
+    // testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
+    // characters.push(testChar);
 }
 
 function shoot() {

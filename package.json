@@ -1,0 +1,24 @@
+{
+  "name": "project_no2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thegray/project_no2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thegray/project_no2/issues"
+  },
+  "homepage": "https://github.com/thegray/project_no2#readme",
+  "dependencies": {
+    "socket.io": "^4.5.0",
+    "socket.io-client": "^4.5.0"
+  }
+}

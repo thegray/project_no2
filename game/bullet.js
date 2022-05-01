@@ -34,12 +34,12 @@ class bullet {
     }
 
     hitScan() {
-        for (var i = 0; i < characters.length; i++) {
-            if (characters[i].getId() !== this.charId) {
+        for (var i = 0; i < Characters.length; i++) {
+            if (Characters[i].getId() !== this.charId) {
                 var collideOrNot = collideCircleCircle(this.x, this.y, 10,
-                    characters[i].getX(), characters[i].getY(), characters[i].getRadius());
+                    Characters[i].getX(), Characters[i].getY(), Characters[i].getRadius());
                 if (collideOrNot) {
-                    characters.splice(i, 1);
+                    Characters.splice(i, 1);
                     // score += 1;
                     return true;
                 }
