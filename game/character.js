@@ -4,8 +4,8 @@ class character {
     }
 
     CharacterInit(x, y, size, speed, id, color
-        ,name
-        ) {
+        , name
+    ) {
         this.cx = x;
         this.cy = y;
         this.size = size;
@@ -84,7 +84,8 @@ class character {
         if (this.ready === true) {
             if (direction === "up") { // w
                 if (this.cy > this.size) {
-                    this.cy -= this.speed;
+                    // this.cy -= this.speed;
+                    PlayerMoveEvent("up");
                 }
             }
             if (direction === "left") { // a

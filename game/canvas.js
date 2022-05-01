@@ -5,14 +5,18 @@ let MS_SPEED = 2,
 let bulletsFired = [];
 let mainChar;
 let Characters = [];
+let CharactersMap = {};
 
 function charactersUpdate() {
     mainChar.update();
 }
 
 function charactersRender() {
-    for (var i = 0; i < Characters.length; i++) {
-        Characters[i].display();
+    // for (var i = 0; i < Characters.length; i++) {
+    //     Characters[i].display();
+    // }
+    for (let [_, c] of Object.entries(CharactersMap)) {
+        c.display();
     }
 }
 
@@ -109,6 +113,7 @@ function updateController() {
     if (mouseIsPressed === true) {
         if (mouseButton === LEFT) {
             shoot();
+            TriggerDebugServer();
         }
     }
 }

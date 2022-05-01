@@ -21,11 +21,11 @@ class Player {
     }
 
     getX() {
-        return this.cx;
+        return this.x;
     }
 
     getY() {
-        return this.cy;
+        return this.y;
     }
 
     getRadius() {
@@ -44,33 +44,33 @@ class Player {
         return this.ready;
     }
 
-    update() {
-        if (this.ready === true) {
-            this.angle = Math.atan2(mouseY - this.cy, mouseX - this.cx);
-            this.normalizeMouseDirection = createVector(mouseX - this.cx, mouseY - this.cy).normalize();
-        }
-    }
+    // update() {
+    //     if (this.ready === true) {
+    //         this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
+    //         this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
+    //     }
+    // }
 
     inputHandler(direction) {
         if (this.ready === true) {
             if (direction === "up") { // w
-                if (this.cy > this.size) {
-                    this.cy -= this.speed;
+                if (this.y > this.size) {
+                    this.y -= this.speed;
                 }
             }
             if (direction === "left") { // a
-                if (this.cx > this.size) {
-                    this.cx -= this.speed;
+                if (this.x > this.size) {
+                    this.x -= this.speed;
                 }
             }
             if (direction === "down") { // s
-                if (this.cy < CANVAS_HEIGHT - this.size) {
-                    this.cy += this.speed;
+                if (this.y < 800 - this.size) {
+                    this.y += this.speed;
                 }
             }
             if (direction === "right") { // d
-                if (this.cx < CANVAS_WIDTH - this.size) {
-                    this.cx += this.speed;
+                if (this.x < 1024 - this.size) {
+                    this.x += this.speed;
                 }
             }
         }
