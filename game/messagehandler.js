@@ -1,11 +1,11 @@
-function UserPlayerMessage(mainPlayer) {
+function UserPlayerCreate(mainPlayer) {
     col = color(mainPlayer.color.r, mainPlayer.color.g, mainPlayer.color.b);
     mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col, mainPlayer.name);
     // Characters.push(mainChar);
     CharactersMap[mainChar.id] = mainChar;
 }
 
-function PlayerJoinMessage(player) {
+function PlayerJoinCreate(player) {
     nc = new character();
     col = color(player.color.r, player.color.g, player.color.b);
     nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col, player.name);
@@ -27,9 +27,23 @@ function InitCurrentPlayers(players) {
 }
 
 function PlayerUpdate(data) {
-    let pl = CharactersMap[data.id];
-    pl.cx = data.x;
-    pl.cy = data.y;
+    if (data.id !== undefined) {
+        let pl = CharactersMap[data.id];
+        if (pl !== undefined) {
+            if (data.x !== undefined) {
+                pl.x = data.x
+            }
+            if (data.y !== undefined) {
+                pl.y = data.y
+            }
+            if (data.angle !== undefined) {
+                pl.angle = data.angle
+            }
+        }
+    } else {
+        console.log("broken message on player_update!")
+    }
+
 }
 
 function RemovePlayer(id) {
@@ -45,6 +59,10 @@ function RemovePlayer(id) {
 
 function PlayerMoveEvent(dir) {
     EmitPlayerMoveEvent(dir);
+}
+
+function PlayerAngleEvent(val) {
+    EmitPlayerAngleEvent(val);
 }
 
 function TriggerDebugServer(dir) {

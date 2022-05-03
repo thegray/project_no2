@@ -16,7 +16,6 @@ server.listen(8080);
 
 console.log('Server started on port 8080');
 
-// var players = []
 var playersMap = {}
 
 function handleRequest(req, res) {
@@ -72,7 +71,8 @@ io.sockets.on('connection',
   function (socket) {
 
     socket.on('user_join',
-      function (name) {
+      function (data) {
+        let name = data.name;
         console.log(`[event] (socket id: ${socket.id}) user join: ${name}`);
         socket.emit('cur_players', getPlayersArray());
 
@@ -80,43 +80,60 @@ io.sockets.on('connection',
         let pl = createNewPlayer(name);
 
         //return player data to user
-        socket.emit('user_player', pl);
-        // players.push(pl);
+        socket.emit('user_player', {
+          player: pl
+        });
         playersMap[socket.id] = pl;
 
         //broadcast player data to other users
-        socket.broadcast.emit('player_join', pl);
+        socket.broadcast.emit('player_join', {
+          player: pl
+        });
       });
 
     socket.on('player_move',
-      function (direction) {
-        // console.log(`[event] (socket id: ${socket.id}) player move: ${direction}`);
+      function (msg) {
+        // console.log(`[event] (socket id: ${socket.id}) player move: ${msg.direction}`);
         // console.log("playersMap: ", playersMap)
         // console.log("----------------------")
         let pl = playersMap[socket.id]
         if (playersMap[socket.id] !== undefined) {
           // 1. works
           // let pl = playersMap[socket.id];
-          // pl.inputHandler(data.direction);
+          // pl.inputHandler(msg.direction);
           // playersMap[socket.id] = pl;
 
           // 2. works
-          // playersMap[socket.id].inputHandler(data.direction);
+          // playersMap[socket.id].inputHandler(msg.direction);
 
           // 3.
-          pl.inputHandler(direction);
-        } else {
-          return;
+          pl.inputHandler(msg.direction);
+          data = {
+            id: pl.getId(),
+            x: pl.getX(),
+            y: pl.getY()
+          }
+          io.sockets.emit('player_update', data);
         }
+        // else {
+        //   return;
+        // }
         // console.log("playersMap: ", playersMap)
         // console.log("=======================")
+      }
+    );
 
-        data = {
-          id: pl.getId(),
-          x: pl.getX(),
-          y: pl.getY()
+    socket.on('player_angle',
+      function (msg) {
+        let pl = playersMap[socket.id]
+        if (playersMap[socket.id] !== undefined) {
+          pl.setAngle(msg.angle);
+          data = {
+            id: pl.getId(),
+            angle: pl.getAngle()
+          }
+          io.sockets.emit('player_update', data);
         }
-        io.sockets.emit('player_update', data);
       }
     );
 
@@ -142,11 +159,9 @@ io.sockets.on('connection',
       if (player != undefined) {
         let playerId = player.getId();
         delete playersMap[socket.id];
-        // let index = players.map(function (e) { return e.id; }).indexOf(playerId);
-        // if (index > -1) {
-        //   players.splice(index, 1);
-        // }
-        socket.broadcast.emit('player_leave', playerId);
+        socket.broadcast.emit('player_leave', {
+          id: playerId
+        });
       }
     });
 
@@ -154,8 +169,6 @@ io.sockets.on('connection',
       // console.log("======================");
       // console.log("curr players array: ", getPlayersArray());
       // console.log("----------------------");
-      // console.log("curr players array: ", players);
-      // console.log("======================");
     })
   }
 );

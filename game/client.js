@@ -6,19 +6,21 @@ let user_data = {
     name: user_name
 }
 // console.log("send 'user_join' event to server, nickname: ", user_name)
-socket.emit('user_join', user_data);
+socket.emit('user_join',
+    user_data
+);
 
 socket.on('user_player',
-    function (main) {
-        // console.log("[event] user_player: ", main)
-        UserPlayerMessage(main);
+    function (data) {
+        // console.log("[event] user_player: ", data)
+        UserPlayerCreate(data.player);
     }
 );
 
 socket.on('player_join',
-    function (player_data) {
-        // console.log("[event] player_join: ", player_data)
-        PlayerJoinMessage(player_data);
+    function (data) {
+        // console.log("[event] player_join: ", data)
+        PlayerJoinCreate(data.player);
     }
 );
 
@@ -30,9 +32,9 @@ socket.on('cur_players',
 );
 
 socket.on('player_leave',
-    function (id) {
-        // console.log("[event] player_leave: ", id)
-        RemovePlayer(id);
+    function (data) {
+        // console.log("[event] player_leave: ", data)
+        RemovePlayer(data.id);
     }
 );
 
@@ -43,10 +45,16 @@ socket.on('player_update',
     }
 );
 
-function EmitPlayerMoveEvent(direction) {
-    socket.emit('player_move',
-        direction
-    );
+function EmitPlayerMoveEvent(dir) {
+    socket.emit('player_move', {
+        direction: dir
+    });
+}
+
+function EmitPlayerAngleEvent(val) {
+    socket.emit('player_angle', {
+        angle: val
+    });
 }
 
 function EmitDebugServer() {

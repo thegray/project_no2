@@ -1,3 +1,6 @@
+const CANVAS_WIDTH = 1024, //windowWidth; 
+    CANVAS_HEIGHT = 800; //windowHeight;
+
 class Player {
     constructor(
         x, y, size, speed, id, color, name
@@ -44,12 +47,20 @@ class Player {
         return this.ready;
     }
 
+    getAngle() {
+        return this.angle;
+    }
+
     // update() {
     //     if (this.ready === true) {
     //         this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
     //         this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
     //     }
     // }
+
+    setAngle(angle) {
+        this.angle = angle;
+    }
 
     inputHandler(direction) {
         if (this.ready === true) {
@@ -64,12 +75,12 @@ class Player {
                 }
             }
             if (direction === "down") { // s
-                if (this.y < 800 - this.size) {
+                if (this.y < CANVAS_HEIGHT - this.size) {
                     this.y += this.speed;
                 }
             }
             if (direction === "right") { // d
-                if (this.x < 1024 - this.size) {
+                if (this.x < CANVAS_WIDTH - this.size) {
                     this.x += this.speed;
                 }
             }

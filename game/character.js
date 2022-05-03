@@ -6,8 +6,8 @@ class character {
     CharacterInit(x, y, size, speed, id, color
         , name
     ) {
-        this.cx = x;
-        this.cy = y;
+        this.x = x;
+        this.y = y;
         this.size = size;
         this.speed = speed;
         this.id = id;
@@ -24,11 +24,11 @@ class character {
     }
 
     getX() {
-        return this.cx;
+        return this.x;
     }
 
     getY() {
-        return this.cy;
+        return this.y;
     }
 
     getRadius() {
@@ -49,15 +49,22 @@ class character {
 
     update() {
         if (this.ready === true) {
-            this.angle = Math.atan2(mouseY - this.cy, mouseX - this.cx);
-            this.normalizeMouseDirection = createVector(mouseX - this.cx, mouseY - this.cy).normalize();
+            this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
+            // this only experimental, need to optimise
+            PlayerAngleEvent(this.angle);
+            //
+            this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
         }
+        // todo: 
+        // 1. create fixed interval update to send messages to server
+        // 2. send angle message every interval
+        // 3. send mouseX, mouseY on shooting message
     }
 
     display() {
         if (this.ready === true) {
             push()
-            translate(this.cx, this.cy);
+            translate(this.x, this.y);
             rotate(this.angle);
             translate(20, -10);
             // noFill();
@@ -73,9 +80,9 @@ class character {
             strokeWeight(3);
             stroke(this.color);
             // noFill();
-            // line(this.cx, this.cy,
-            //     this.cx + cos(this.angle) * 40, this.cy + sin(this.angle) * 40);
-            ellipse(this.cx, this.cy, this.size, this.size);
+            // line(this.x, this.y,
+            //     this.x + cos(this.angle) * 40, this.y + sin(this.angle) * 40);
+            ellipse(this.x, this.y, this.size, this.size);
             // pop();
         }
     }
@@ -83,24 +90,27 @@ class character {
     inputHandler(direction) {
         if (this.ready === true) {
             if (direction === "up") { // w
-                if (this.cy > this.size) {
-                    // this.cy -= this.speed;
+                if (this.y > this.size) {
+                    // this.y -= this.speed;
                     PlayerMoveEvent("up");
                 }
             }
             if (direction === "left") { // a
-                if (this.cx > this.size) {
-                    this.cx -= this.speed;
+                if (this.x > this.size) {
+                    // this.x -= this.speed;
+                    PlayerMoveEvent("left");
                 }
             }
             if (direction === "down") { // s
-                if (this.cy < CANVAS_HEIGHT - this.size) {
-                    this.cy += this.speed;
+                if (this.y < CANVAS_HEIGHT - this.size) {
+                    // this.y += this.speed;
+                    PlayerMoveEvent("down");
                 }
             }
             if (direction === "right") { // d
-                if (this.cx < CANVAS_WIDTH - this.size) {
-                    this.cx += this.speed;
+                if (this.x < CANVAS_WIDTH - this.size) {
+                    // this.x += this.speed;
+                    PlayerMoveEvent("right");
                 }
             }
         }
