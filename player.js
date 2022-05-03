@@ -1,5 +1,4 @@
-const CANVAS_WIDTH = 1024, //windowWidth; 
-    CANVAS_HEIGHT = 800; //windowHeight;
+var CFG = require('./config.js')
 
 class Player {
     constructor(
@@ -75,12 +74,12 @@ class Player {
                 }
             }
             if (direction === "down") { // s
-                if (this.y < CANVAS_HEIGHT - this.size) {
+                if (this.y < CFG.GC.CANVAS_HEIGHT - this.size) {
                     this.y += this.speed;
                 }
             }
             if (direction === "right") { // d
-                if (this.x < CANVAS_WIDTH - this.size) {
+                if (this.x < CFG.GC.CANVAS_WIDTH - this.size) {
                     this.x += this.speed;
                 }
             }
