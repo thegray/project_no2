@@ -4,7 +4,7 @@ class character {
     }
 
     CharacterInit(x, y, size, speed, id, color
-        , name
+        , cd, name
     ) {
         this.x = x;
         this.y = y;
@@ -15,11 +15,14 @@ class character {
         this.name = name;
 
         this.ready = true;
+        this.lastShoot = 0;
+        this.shootCooldown = cd;
         this.angle = 0;
         this.normalizeMouseDirection;
     }
 
     getMouseVector() {
+        this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
         return this.normalizeMouseDirection;
     }
 
@@ -43,8 +46,8 @@ class character {
         return this.color;
     }
 
-    getIsReady() {
-        return this.ready;
+    getLastShoot() {
+        return this.lastShoot;
     }
 
     update() {
@@ -53,7 +56,7 @@ class character {
             // this only experimental, need to optimise
             PlayerAngleEvent(this.angle);
             //
-            this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
+            // this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
         }
         // todo: 
         // 1. create fixed interval update to send messages to server
@@ -87,30 +90,46 @@ class character {
         }
     }
 
-    inputHandler(direction) {
+    inputHandler(event) {
         if (this.ready === true) {
-            if (direction === "up") { // w
-                if (this.y > this.size) {
-                    // this.y -= this.speed;
-                    PlayerMoveEvent("up");
+            if (event.type === "keypress") {
+                let direction = event.value;
+                if (direction === "up") { // w
+                    if (this.y > this.size) {
+                        // this.y -= this.speed;
+                        PlayerMoveEvent("up");
+                    }
                 }
-            }
-            if (direction === "left") { // a
-                if (this.x > this.size) {
-                    // this.x -= this.speed;
-                    PlayerMoveEvent("left");
+                if (direction === "left") { // a
+                    if (this.x > this.size) {
+                        // this.x -= this.speed;
+                        PlayerMoveEvent("left");
+                    }
                 }
-            }
-            if (direction === "down") { // s
-                if (this.y < CANVAS_HEIGHT - this.size) {
-                    // this.y += this.speed;
-                    PlayerMoveEvent("down");
+                if (direction === "down") { // s
+                    if (this.y < CANVAS_HEIGHT - this.size) {
+                        // this.y += this.speed;
+                        PlayerMoveEvent("down");
+                    }
                 }
-            }
-            if (direction === "right") { // d
-                if (this.x < CANVAS_WIDTH - this.size) {
-                    // this.x += this.speed;
-                    PlayerMoveEvent("right");
+                if (direction === "right") { // d
+                    if (this.x < CANVAS_WIDTH - this.size) {
+                        // this.x += this.speed;
+                        PlayerMoveEvent("right");
+                    }
+                }
+            } else if (event.type === "mouseclick") {
+                if (event.value === "left") {
+                    let delta = (Date.now() - this.lastShoot) / 1000;
+                    if (delta > this.shootCooldown) {
+                        let mouseVector = this.getMouseVector();
+                        let vector = {
+                            x: mouseVector.x,
+                            y: mouseVector.y
+                        }
+                        PlayerShootEvent(vector);
+                        this.lastShoot = Date.now();
+                    }
                 }
             }
         }

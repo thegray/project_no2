@@ -1,6 +1,8 @@
+// from server to game part
 function UserPlayerCreate(mainPlayer) {
     col = color(mainPlayer.color.r, mainPlayer.color.g, mainPlayer.color.b);
-    mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col, mainPlayer.name);
+    mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col, 
+        mainPlayer.shootCooldown, mainPlayer.name);
     // Characters.push(mainChar);
     CharactersMap[mainChar.id] = mainChar;
 }
@@ -8,7 +10,8 @@ function UserPlayerCreate(mainPlayer) {
 function PlayerJoinCreate(player) {
     nc = new character();
     col = color(player.color.r, player.color.g, player.color.b);
-    nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col, player.name);
+    nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col, 
+        player.shootCooldown, player.name);
     // Characters.push(nc);
     CharactersMap[nc.id] = nc;
 }
@@ -31,13 +34,13 @@ function PlayerUpdate(data) {
         let pl = CharactersMap[data.id];
         if (pl !== undefined) {
             if (data.x !== undefined) {
-                pl.x = data.x
+                pl.x = data.x;
             }
             if (data.y !== undefined) {
-                pl.y = data.y
+                pl.y = data.y;
             }
             if (data.angle !== undefined) {
-                pl.angle = data.angle
+                pl.angle = data.angle;
             }
         }
     } else {
@@ -57,6 +60,26 @@ function RemovePlayer(id) {
     }
 }
 
+function PlayerShoot(blt) {
+    if (blt != null) {
+        // BulletsFired
+        if (blt.playerId !== undefined) {
+            let pl = CharactersMap[blt.playerId];
+            if (pl !== undefined) {
+                oneBullet = new bullet(blt.x, blt.y,
+                    blt.vx, blt.vy,
+                    blt.playerId, pl.getColor());
+                BulletsFired.push(oneBullet);
+            }
+        }
+
+    }
+}
+
+// ------- end of from server to game part ---------
+
+// from game to server part
+
 function PlayerMoveEvent(dir) {
     EmitPlayerMoveEvent(dir);
 }
@@ -65,6 +88,11 @@ function PlayerAngleEvent(val) {
     EmitPlayerAngleEvent(val);
 }
 
+function PlayerShootEvent(val) {
+    EmitPlayerShootEvent(val)
+}
+
 function TriggerDebugServer(dir) {
     EmitDebugServer();
 }
+// ---------------- end of server part ----------------

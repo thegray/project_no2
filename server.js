@@ -4,11 +4,11 @@ var path = require('path');
 
 var fs = require('fs');
 
-
 require('./game.js')();
 
 var server = http.createServer(handleRequest);
 server.listen(8080);
+const io = require('socket.io')(server);
 
 console.log('Server started on port 8080');
 
@@ -53,4 +53,4 @@ function handleRequest(req, res) {
   );
 }
 
-gameServerInit(server);
+GameServer(io);

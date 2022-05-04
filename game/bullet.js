@@ -2,8 +2,8 @@ class bullet {
     constructor(cx, cy, xSpd, ySpd, charId, _color) {
         this.x = cx;
         this.y = cy;
-        this.xSpd = 15 * xSpd;
-        this.ySpd = 15 * ySpd;
+        this.vx = xSpd //*30;
+        this.vy = ySpd //*30;
         this.charId = charId;
         this.color = _color;
 
@@ -23,28 +23,29 @@ class bullet {
     }
 
     update() {
-        this.x += this.xSpd;
-        this.y += this.ySpd;
-        this.xSpd *= 0.994;
-        this.ySpd *= 0.994;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.994;
+        this.vy *= 0.994;
     }
 
     outOfBounds() {
+        // return false;
         return (this.x > CANVAS_WIDTH + 10 || this.x < -10 || this.y > CANVAS_HEIGHT + 10 || this.y < -10);
     }
 
-    hitScan() {
-        for (var i = 0; i < Characters.length; i++) {
-            if (Characters[i].getId() !== this.charId) {
-                var collideOrNot = collideCircleCircle(this.x, this.y, 10,
-                    Characters[i].getX(), Characters[i].getY(), Characters[i].getRadius());
-                if (collideOrNot) {
-                    Characters.splice(i, 1);
-                    // score += 1;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    // hitScan() {
+    //     for (var i = 0; i < Characters.length; i++) {
+    //         if (Characters[i].getId() !== this.charId) {
+    //             var collideOrNot = collideCircleCircle(this.x, this.y, 10,
+    //                 Characters[i].getX(), Characters[i].getY(), Characters[i].getRadius());
+    //             if (collideOrNot) {
+    //                 Characters.splice(i, 1);
+    //                 // score += 1;
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //     return false;
+    // }
 }

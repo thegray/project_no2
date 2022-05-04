@@ -2,10 +2,10 @@ let MS_SPEED = 2,
     CHAR_RADIUS = 30,
     CANVAS_WIDTH, CANVAS_HEIGHT;
 
-let bulletsFired = [];
 let mainChar;
 let Characters = [];
 let CharactersMap = {};
+let BulletsFired = [];
 
 function charactersUpdate() {
     mainChar.update();
@@ -21,20 +21,22 @@ function charactersRender() {
 }
 
 function bulletsUpdate() {
-    for (var i = 0; i < bulletsFired.length; i++) {
-        bulletsFired[i].update();
-        if (bulletsFired[i].outOfBounds()) {
-            bulletsFired.splice(i, 1);
+    for (var i = 0; i < BulletsFired.length; i++) {
+        BulletsFired[i].update();
+        if (BulletsFired[i].outOfBounds()) {
+            // console.log("bullet out of bound", BulletsFired[i])
+            BulletsFired.splice(i, 1);
         }
-        else if (bulletsFired[i].hitScan()) {
-            bulletsFired.splice(i, 1);
-        }
+        // else if (BulletsFired[i].hitScan()) {
+        //     BulletsFired.splice(i, 1);
+        // }
     }
 }
 
 function bulletsRender() {
-    for (var i = 0; i < bulletsFired.length; i++) {
-        bulletsFired[i].display();
+    for (var i = 0; i < BulletsFired.length; i++) {
+        BulletsFired[i].display();
+        // console.log("the bullet: ", BulletsFired[i])
     }
 }
 
@@ -43,9 +45,7 @@ function eventsProcessor(event) {
     //     type: 'keypress',
     //     value: 'x'
     //   };
-    if (event.type === "keypress") {
-        mainChar.inputHandler(event.value)
-    }
+    mainChar.inputHandler(event)
 }
 
 function setup() {
@@ -63,7 +63,7 @@ function update() {
 }
 
 function render() {
-    background(0);
+    background(color(50, 50, 50));
     drawReticle();
     charactersRender();
     bulletsRender();
@@ -82,9 +82,20 @@ function initObjects() {
 }
 
 function shoot() {
-    let mouseVector = mainChar.getMouseVector();
-    oneBullet = new bullet(mainChar.getX(), mainChar.getY(), mouseVector.x, mouseVector.y, mainChar.getId(), mainChar.getColor());
-    bulletsFired.push(oneBullet);
+    let delta = (Date.now() - mainChar.lastShoot) / 1000;
+    if (delta > mainChar.shootCooldown) {
+        let mouseVector = mainChar.getMouseVector();
+        oneBullet = new bullet(mainChar.getX(), mainChar.getY(),
+            mouseVector.x, mouseVector.y,
+            mainChar.getId(), mainChar.getColor());
+        BulletsFired.push(oneBullet);
+        mainChar.lastShoot = Date.now();
+    }
+    // let vector = {
+    //     x: mouseVector.x,
+    //     y: mouseVector.y
+    // }
+    // PlayerShootEvent(vector);
 }
 
 function updateController() {
@@ -112,8 +123,11 @@ function updateController() {
 
     if (mouseIsPressed === true) {
         if (mouseButton === LEFT) {
-            shoot();
-            TriggerDebugServer();
+            e.type = "mouseclick";
+            e.value = "left";
+            eventsProcessor(e);
+            // shoot();
+            // TriggerDebugServer();
         }
     }
 }

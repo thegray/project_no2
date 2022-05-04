@@ -13,9 +13,10 @@ class Player {
         this.name = name;
 
         this.ready = true;
+        this.lastShoot = 0;
+        this.shootCooldown = CFG.GC.BLT_COOLDOWN;
 
         this.angle = 0;
-        this.normalizeMouseDirection;
     }
 
     getMouseVector() {
@@ -49,6 +50,10 @@ class Player {
     getAngle() {
         return this.angle;
     }
+
+    // getCurrentTargetVector(targetx, targety) {
+    //     return createVector(targetx - this.x, targety - this.y).normalize();
+    // }
 
     // update() {
     //     if (this.ready === true) {
