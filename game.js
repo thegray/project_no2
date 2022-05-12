@@ -55,10 +55,13 @@ function gameUpdate(delta) {
 
 // ------------------------------
 
-function sendMessages() {
+function sendMessages(event, msg) {
     if (TESTING_VAR) {
         TESTING_VAR = false;
         io.sockets.emit('debug_event', "AAAAAAAAAAAA");
+    }
+    if (event == "player_hit") {
+        io.sockets.emit("player_hit", msg);
     }
 }
 
@@ -116,15 +119,15 @@ function removePlayer(sid) {
 function playerShoot(sid, vector) {
     // sid is socket.id
     let pl = getPlayer(sid);
-    if (pl !== null) {
-        // add check if not in cooldown, can shoot
+    if (pl !== null && pl.getIsAlive()) {
+        // TODO: add check if not in cooldown, can shoot
         let tx = vector.x;
         let ty = vector.y;
         if (tx == null || ty == null) {
             return null;
         }
         // let tvector = pl.getCurrentTargetVector(tx, ty);
-        let bullet = bulletPool[0];        
+        let bullet = bulletPool[0];
         bullet.setPlayerId(pl.getId());
         bullet.setX(pl.getX());
         bullet.setY(pl.getY());
@@ -145,7 +148,7 @@ function playerShoot(sid, vector) {
 function populateBulletPool() {
     for (let i = 0; i < CFG.GC.BLT_POOL; i++) {
         let bullet = new Bullet();
-        // bulletPool.ready.push(bullet);
+        bullet.setRadius(CFG.GC.BLT_SIZE);
         bulletPool.push(bullet);
     }
 }
@@ -154,13 +157,38 @@ function updateBullets(delta) {
     bulletPool.forEach(bullet => {
         if (bullet.isOnFlight()) {
             bullet.update();
-            // add collision check
-            // ...
-            if (bullet.isOutOfBounds()) {
+
+            let pId = bulletPlayersHit(bullet);
+            if (pId != null) {
+                let msg = {
+                    bulletId: bullet.getPlayerId(),
+                    playerId: pId,
+                }
+                sendMessages("player_hit", msg);
+            }
+
+            if (pId != null || bullet.isOutOfBounds()) {
                 bullet.reset();
             }
         }
     });
+}
+
+function bulletPlayersHit(bullet) {
+    for (var key of Object.keys(playersMap)) {
+        let player = playersMap[key];
+        if (player.getIsAlive() && player.getId() != bullet.getPlayerId()) {
+            let isHit = circleColliderCheck(bullet, player);
+            if (isHit) {
+                // set player alive to false
+                // console.log("is hit: ", isHit)
+                player.setAlive(false);
+
+                return player.id;
+            }
+        }
+    }
+    return null;
 }
 
 // --------- end of bullet part -------
@@ -192,13 +220,14 @@ function inMessageHandler() {
                 function (msg) {
                     if (getPlayer(socket.id) !== null) {
                         pl = getPlayer(socket.id);
-                        pl.inputHandler(msg.direction);
-                        data = {
-                            id: pl.getId(),
-                            x: pl.getX(),
-                            y: pl.getY()
+                        if (pl.inputHandler(msg.direction)) {
+                            data = {
+                                id: pl.getId(),
+                                x: pl.getX(),
+                                y: pl.getY()
+                            }
+                            io.sockets.emit('player_update', data);
                         }
-                        io.sockets.emit('player_update', data);
                     }
                 }
             );
@@ -206,7 +235,7 @@ function inMessageHandler() {
             socket.on('player_angle',
                 function (msg) {
                     let pl = getPlayer(socket.id);
-                    if (pl !== null) {
+                    if (pl !== null && pl.getIsAlive()) {
                         pl.setAngle(msg.angle);
                         data = {
                             id: pl.getId(),

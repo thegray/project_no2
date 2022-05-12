@@ -6,6 +6,7 @@ const GAME_CONFIG = {
     BLT_SPEED: 40,
     BLT_POOL: 20,
     BLT_COOLDOWN: 2,
+    BLT_SIZE: 10,
     SERVER_TICK: 60
 }
 

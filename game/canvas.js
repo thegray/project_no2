@@ -20,6 +20,13 @@ function charactersRender() {
     }
 }
 
+function RemoveBulletById(id) {
+    let i = BulletsFired.findIndex((bullet) => bullet.getCharId() == id);
+    if (i > -1) {
+        BulletsFired.splice(i, 1);
+    }
+}
+
 function bulletsUpdate() {
     for (var i = 0; i < BulletsFired.length; i++) {
         BulletsFired[i].update();
@@ -75,6 +82,7 @@ function draw() {
 }
 
 function initObjects() {
+    console.log("init object mainChar")
     mainChar = new character();
     // characters.push(mainChar);
     // testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
@@ -82,15 +90,16 @@ function initObjects() {
 }
 
 function shoot() {
-    let delta = (Date.now() - mainChar.lastShoot) / 1000;
-    if (delta > mainChar.shootCooldown) {
-        let mouseVector = mainChar.getMouseVector();
-        oneBullet = new bullet(mainChar.getX(), mainChar.getY(),
-            mouseVector.x, mouseVector.y,
-            mainChar.getId(), mainChar.getColor());
-        BulletsFired.push(oneBullet);
-        mainChar.lastShoot = Date.now();
-    }
+    // let delta = (Date.now() - mainChar.lastShoot) / 1000;
+    // if (delta > mainChar.shootCooldown) {
+    //     let mouseVector = mainChar.getMouseVector();
+    //     oneBullet = new bullet(mainChar.getX(), mainChar.getY(),
+    //         mouseVector.x, mouseVector.y,
+    //         mainChar.getId(), mainChar.getColor());
+    //     BulletsFired.push(oneBullet);
+    //     mainChar.lastShoot = Date.now();
+    // }
+
     // let vector = {
     //     x: mouseVector.x,
     //     y: mouseVector.y

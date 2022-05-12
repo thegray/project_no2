@@ -64,8 +64,15 @@ socket.on('player_update',
 
 socket.on('player_shoot',
     function (data) {
-        logger("[event] player_shoot: ", data)
+        // logger("[event] player_shoot: ", data)
         PlayerShoot(data.bullet);
+    }
+);
+
+socket.on('player_hit',
+    function (data) {
+        logger("[event] player_hit: ", data)
+        PlayerHit(data);
     }
 );
 

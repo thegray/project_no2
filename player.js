@@ -12,7 +12,7 @@ class Player {
         this.color = color;
         this.name = name;
 
-        this.ready = true;
+        this.alive = true;
         this.lastShoot = 0;
         this.shootCooldown = CFG.GC.BLT_COOLDOWN;
 
@@ -43,8 +43,12 @@ class Player {
         return this.color;
     }
 
-    getIsReady() {
-        return this.ready;
+    getIsAlive() {
+        return this.alive;
+    }
+
+    setAlive(alive) {
+        this.alive = alive;
     }
 
     getAngle() {
@@ -67,7 +71,7 @@ class Player {
     }
 
     inputHandler(direction) {
-        if (this.ready === true) {
+        if (this.alive === true) {
             if (direction === "up") { // w
                 if (this.y > this.size) {
                     this.y -= this.speed;
@@ -88,7 +92,10 @@ class Player {
                     this.x += this.speed;
                 }
             }
+            return true;
         }
+        else 
+            return false;
     }
 
     // hitScan(){

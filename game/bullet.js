@@ -1,11 +1,12 @@
 class bullet {
-    constructor(cx, cy, xSpd, ySpd, charId, _color) {
+    constructor(cx, cy, xSpd, ySpd, charId, _color, rad) {
         this.x = cx;
         this.y = cy;
         this.vx = xSpd //*30;
         this.vy = ySpd //*30;
         this.charId = charId;
         this.color = _color;
+        this.size = rad;
 
         this.fillcolor = color(
             this.color.levels[0], 
@@ -14,11 +15,15 @@ class bullet {
             135);
     }
 
+    getCharId() {
+        return this.charId;
+    }
+
     display() {
         push()
         stroke(this.color);
         fill(this.fillcolor); 
-        ellipse(this.x, this.y, 10);
+        ellipse(this.x, this.y, this.size);
         pop();
     }
 

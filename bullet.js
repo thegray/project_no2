@@ -17,16 +17,36 @@ class Bullet {
         return this.onFlight;
     }
 
+    getPlayerId() {
+        return this.playerId;
+    }
+
     setPlayerId(pId) {
         this.playerId = pId;
+    }
+
+    getX() {
+        return this.x;
     }
 
     setX(x) {
         this.x = x;
     }
 
+    getY() {
+        return this.y;
+    }
+
     setY(y) {
         this.y = y;
+    }
+
+    setRadius(r) {
+        this.radius = r;
+    }
+
+    getRadius() {
+        return this.radius;
     }
 
     setVectorX(valx) {

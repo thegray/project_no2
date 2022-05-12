@@ -1,8 +1,9 @@
 // from server to game part
 function UserPlayerCreate(mainPlayer) {
     col = color(mainPlayer.color.r, mainPlayer.color.g, mainPlayer.color.b);
-    mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col, 
+    mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col,
         mainPlayer.shootCooldown, mainPlayer.name);
+    mainChar.setAlive(true);
     // Characters.push(mainChar);
     CharactersMap[mainChar.id] = mainChar;
 }
@@ -10,8 +11,9 @@ function UserPlayerCreate(mainPlayer) {
 function PlayerJoinCreate(player) {
     nc = new character();
     col = color(player.color.r, player.color.g, player.color.b);
-    nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col, 
+    nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col,
         player.shootCooldown, player.name);
+    nc.setAlive(players.alive);
     // Characters.push(nc);
     CharactersMap[nc.id] = nc;
 }
@@ -23,6 +25,7 @@ function InitCurrentPlayers(players) {
             nc = new character();
             let col = color(players[i].color.r, players[i].color.g, players[i].color.b);
             nc.CharacterInit(players[i].x, players[i].y, players[i].size, players[i].speed, players[i].id, col, players[i].name);
+            nc.setAlive(players[i].alive);
             // Characters.push(nc);
             CharactersMap[nc.id] = nc;
         }
@@ -52,7 +55,7 @@ function PlayerUpdate(data) {
 function RemovePlayer(id) {
     // let index = Characters.map(function (e) { return e.id; }).indexOf(id);
     // if (index > -1) {
-    //     Characters[index].ready = false;
+    //     Characters[index].alive = false;
     //     Characters.splice(index, 1);
     // }
     if (CharactersMap[id] !== undefined) {
@@ -68,12 +71,19 @@ function PlayerShoot(blt) {
             if (pl !== undefined) {
                 oneBullet = new bullet(blt.x, blt.y,
                     blt.vx, blt.vy,
-                    blt.playerId, pl.getColor());
+                    blt.playerId, pl.getColor(), blt.radius);
                 BulletsFired.push(oneBullet);
             }
         }
 
     }
+}
+
+function PlayerHit(data) {
+    if (CharactersMap[data.playerId] !== undefined) {
+        CharactersMap[data.playerId].setAlive(false);
+    }
+    RemoveBulletById(data.bulletId);
 }
 
 // ------- end of from server to game part ---------

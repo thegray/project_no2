@@ -1,6 +1,6 @@
 class character {
     constructor() {
-        this.ready = false;
+        this.alive = false;
     }
 
     CharacterInit(x, y, size, speed, id, color
@@ -14,11 +14,19 @@ class character {
         this.color = color;
         this.name = name;
 
-        this.ready = true;
+        // this.alive = true;
         this.lastShoot = 0;
         this.shootCooldown = cd;
         this.angle = 0;
         this.normalizeMouseDirection;
+    }
+
+    setAlive(alive) {
+        this.alive = alive;
+    }
+
+    getIsAlive() {
+        return this.alive;
     }
 
     getMouseVector() {
@@ -51,7 +59,7 @@ class character {
     }
 
     update() {
-        if (this.ready === true) {
+        if (this.alive === true) {
             this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
             // this only experimental, need to optimise
             PlayerAngleEvent(this.angle);
@@ -65,7 +73,7 @@ class character {
     }
 
     display() {
-        if (this.ready === true) {
+        if (this.alive === true) {
             push()
             translate(this.x, this.y);
             rotate(this.angle);
@@ -91,7 +99,7 @@ class character {
     }
 
     inputHandler(event) {
-        if (this.ready === true) {
+        if (this.alive === true) {
             if (event.type === "keypress") {
                 let direction = event.value;
                 if (direction === "up") { // w
