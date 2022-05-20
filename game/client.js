@@ -16,21 +16,14 @@ socket.on('connect', () => {
     logger("socket connected!");
 });
 
-let user_name = sessionStorage.getItem("nickname");
-let user_data = {
-    name: user_name
-}
-
-logger("send 'user_join' event to server, nickname: ", user_name)
-socket.emit('user_join',
-    user_data
-);
-
 socket.on('user_player',
     function (data) {
-        // logger("[event] user_player: ", data)
+        logger("[event] user_player: ", data)
         // logger("[event] user_player: ", socket.id)
         UserPlayerCreate(data.player);
+        if (data.name != "") {
+            sessionStorage.setItem("nickname", data.name);
+        }
     }
 );
 
@@ -84,6 +77,18 @@ socket.on('debug_event',
 
 // ------------------------
 
+// join socket server event
+function EmitPlayerJoinEvent() {
+    let user_name = sessionStorage.getItem("nickname");
+    let user_data = {
+        name: user_name
+    }
+    logger("send 'user_join' event to server, nickname: ", user_name)
+    socket.emit('user_join',
+        user_data
+    );
+}
+
 function EmitPlayerMoveEvent(dir) {
     socket.emit('player_move', {
         direction: dir
@@ -97,7 +102,7 @@ function EmitPlayerAngleEvent(val) {
 }
 
 function EmitPlayerShootEvent(vector) {
-    // logger("[emit][event] player_shoot: ", vector)
+    logger("[emit][event] player_shoot: ", vector)
     socket.emit('player_shoot', {
         vector: vector
     });

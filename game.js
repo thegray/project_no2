@@ -199,6 +199,10 @@ function inMessageHandler() {
             socket.on('user_join',
                 function (data) {
                     let name = data.name;
+                    if (name == "") {
+                        name = genRandomName()
+                    }
+
                     info(`[event] (socket id: ${socket.id}) user join: ${name}`);
                     socket.emit('cur_players', getPlayersArray());
 
@@ -207,7 +211,8 @@ function inMessageHandler() {
 
                     // broadcast player data to other users
                     socket.emit('user_player', {
-                        player: pl
+                        player: pl,
+                        name: name,
                     });
                     socket.broadcast.emit('player_join', {
                         player: pl

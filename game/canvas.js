@@ -1,3 +1,5 @@
+const GAME_STATE_ENUM = Object.freeze({ "INIT": 1, "RUN": 2, "RETRY": 3 });
+
 let MS_SPEED = 2,
     CHAR_RADIUS = 30,
     CANVAS_WIDTH, CANVAS_HEIGHT;
@@ -6,6 +8,7 @@ let mainChar;
 let Characters = [];
 let CharactersMap = {};
 let BulletsFired = [];
+let GameState = GAME_STATE_ENUM.INIT;
 
 function charactersUpdate() {
     mainChar.update();
@@ -64,6 +67,11 @@ function setup() {
     tes = createP('aaaa');
 }
 
+function draw() {
+    update();
+    render();
+}
+
 function update() {
     updateController();
     charactersUpdate();
@@ -72,22 +80,37 @@ function update() {
 
 function render() {
     background(color(50, 50, 50));
-    drawReticle();
     charactersRender();
     bulletsRender();
+    drawUI();
 }
 
-function draw() {
-    update();
-    render();
+function drawUI() {
+    switch (GameState) {
+        case GAME_STATE_ENUM.INIT:
+            console.log('init..');
+            // UI_GameOver();
+            break;
+        case GAME_STATE_ENUM.RUN:
+            // UI_GameOver();
+            UI_DrawReticle();
+            break;
+        case GAME_STATE_ENUM.RETRY:
+            UI_GameOver();
+            break;
+        default:
+            console.log(`Unknown state!`);
+    }
 }
 
 function initObjects() {
-    console.log("init object mainChar")
+    // console.log("init object mainChar")
     mainChar = new character();
     // characters.push(mainChar);
     // testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
     // characters.push(testChar);
+    PlayerJoinEvent();
+    GameState = GAME_STATE_ENUM.RUN;
 }
 
 function shoot() {

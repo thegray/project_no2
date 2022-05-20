@@ -16,5 +16,14 @@ module.exports = function() {
         }
         return collide;
     };
+    const animals = ["Turtle", "Dog", "Cat", "Lion", "Dragon", "Snake", "Pig", "Phoenix", "Bear", "Chicken", "Duck", "Mouse", "Monkey", "Beetle", "Spider"];
+    const prefix = ["Kind", "Angry", "Happy", "Sad", "Mad", "Bad", "Rebel", "Cautious", "Troubled", "Cool", "Calm", "Helpful"];
+    this.genRandomName = function() {
+        let result;
+        let lenAnimals = animals.length
+        let lenPrefix = prefix.length
+        result = prefix[getRandomArbitrary(0, lenPrefix)] + animals[getRandomArbitrary(0, lenAnimals)]
+        return result;
+    };
   };
   

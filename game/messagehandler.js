@@ -13,7 +13,7 @@ function PlayerJoinCreate(player) {
     col = color(player.color.r, player.color.g, player.color.b);
     nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col,
         player.shootCooldown, player.name);
-    nc.setAlive(players.alive);
+    nc.setAlive(player.alive);
     // Characters.push(nc);
     CharactersMap[nc.id] = nc;
 }
@@ -79,9 +79,16 @@ function PlayerShoot(blt) {
     }
 }
 
+// event handler of Player got hit by a bullet
 function PlayerHit(data) {
     if (CharactersMap[data.playerId] !== undefined) {
+        // console.log("debug 1: ", CharactersMap[data.playerId]);
+        // console.log("debug 2: ", mainChar);
         CharactersMap[data.playerId].setAlive(false);
+        if (data.playerId == mainChar.getId()) {
+            // console.log("trigger dead")
+            GameState = GAME_STATE_ENUM.RETRY;
+        }
     }
     RemoveBulletById(data.bulletId);
 }
@@ -89,6 +96,10 @@ function PlayerHit(data) {
 // ------- end of from server to game part ---------
 
 // from game to server part
+
+function PlayerJoinEvent() {
+    EmitPlayerJoinEvent();
+}
 
 function PlayerMoveEvent(dir) {
     EmitPlayerMoveEvent(dir);
