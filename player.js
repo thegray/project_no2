@@ -70,6 +70,15 @@ class Player {
         this.angle = angle;
     }
 
+    canShoot() {
+        let delta = (Date.now() - this.lastShoot) / 1000;
+        return delta > this.shootCooldown;
+    }
+
+    shoot() {
+        this.lastShoot = Date.now();
+    }
+
     inputHandler(direction) {
         if (this.alive === true) {
             if (direction === "up") { // w

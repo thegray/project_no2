@@ -119,8 +119,7 @@ function removePlayer(sid) {
 function playerShoot(sid, vector) {
     // sid is socket.id
     let pl = getPlayer(sid);
-    if (pl !== null && pl.getIsAlive()) {
-        // TODO: add check if not in cooldown, can shoot
+    if (pl !== null && pl.getIsAlive() && pl.canShoot()) {
         let tx = vector.x;
         let ty = vector.y;
         if (tx == null || ty == null) {
@@ -133,9 +132,8 @@ function playerShoot(sid, vector) {
         bullet.setY(pl.getY());
         bullet.setVectorX(tx);
         bullet.setVectorY(ty);
-        // bulletPool.onFlight.push(bullet);
-        // bulletPool.ready.shift();
         bullet.setOnFlight(true);
+        pl.shoot();
         return bullet;
     }
     return null;

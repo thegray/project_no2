@@ -61,15 +61,10 @@ class character {
     update() {
         if (this.alive === true) {
             this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
-            // this only experimental, need to optimise
             PlayerAngleEvent(this.angle);
             //
             // this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
         }
-        // todo: 
-        // 1. create fixed interval update to send messages to server
-        // 2. send angle message every interval
-        // 3. send mouseX, mouseY on shooting message
     }
 
     display() {

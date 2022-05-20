@@ -61,6 +61,7 @@ function setup() {
     CANVAS_HEIGHT = 800; //windowHeight;
     createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     initObjects();
+    tes = createP('aaaa');
 }
 
 function update() {
