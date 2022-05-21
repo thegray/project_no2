@@ -50,7 +50,7 @@ function gsInit() {
 
 function gameUpdate(delta) {
     updateBullets(delta);
-    sendMessages();
+    // sendMessages();
 }
 
 // ------------------------------
@@ -60,14 +60,22 @@ function sendMessages(event, msg) {
         TESTING_VAR = false;
         io.sockets.emit('debug_event', "AAAAAAAAAAAA");
     }
-    if (event == "player_hit") {
-        io.sockets.emit("player_hit", msg);
+    if (event == "player_got_hit") {
+        io.sockets.emit("player_got_hit", msg);
     }
 }
 
 // code for player part
 
 var playersMap = {}
+
+function getPlayer(sid) {
+    // sid is socket.id
+    if (playersMap[sid] !== undefined && playersMap[sid] !== null) {
+        return playersMap[sid];
+    }
+    return null;
+}
 
 function getPlayersArray() {
     let arr = Object.keys(playersMap).map((key) => playersMap[key]);
@@ -76,27 +84,29 @@ function getPlayersArray() {
 
 function createNewPlayer(name) {
     let pl = new Player(
-        getRandomArbitrary(100, 900),
-        getRandomArbitrary(100, 700),
-        CFG.GC.PL_DEFAULT_SIZE, //size
-        CFG.GC.PL_DEFAULT_SPEED,  //speed
-        genRandomId(),
+        getRandomArbitrary(100, 900), // x
+        getRandomArbitrary(100, 700), // y
+        CFG.GC.PL_DEFAULT_SIZE, // size
+        CFG.GC.PL_DEFAULT_SPEED,  // speed
+        genRandomId(), // id
         color = {
             r: getRandomArbitrary(0, 230),
             g: getRandomArbitrary(50, 255), // to prevent black
             b: getRandomArbitrary(0, 230)
         },
-        name
+        name // name
     );
     return pl;
 }
 
-function getPlayer(sid) {
-    // sid is socket.id
-    if (playersMap[sid] !== undefined && playersMap[sid] !== null) {
-        return playersMap[sid];
-    }
-    return null;
+function resetPlayer(socketId) {
+    let pl = getPlayer(socketId);
+    pl.setX(getRandomArbitrary(100, 900));
+    pl.setY(getRandomArbitrary(100, 700));
+    pl.setRadius(CFG.GC.PL_DEFAULT_SIZE);
+    pl.setSpeed(CFG.GC.PL_DEFAULT_SPEED);
+    pl.setAlive(true);
+    return pl;
 }
 
 function addPlayer(sid, name) {
@@ -162,7 +172,7 @@ function updateBullets(delta) {
                     bulletId: bullet.getPlayerId(),
                     playerId: pId,
                 }
-                sendMessages("player_hit", msg);
+                sendMessages("player_got_hit", msg);
             }
 
             if (pId != null || bullet.isOutOfBounds()) {
@@ -179,7 +189,6 @@ function bulletPlayersHit(bullet) {
             let isHit = circleColliderCheck(bullet, player);
             if (isHit) {
                 // set player alive to false
-                // console.log("is hit: ", isHit)
                 player.setAlive(false);
 
                 return player.id;
@@ -196,10 +205,12 @@ function inMessageHandler() {
         // We are given a websocket object in our function
         function (socket) {
 
-            socket.on('user_join',
+            socket.on('my_player_join',
                 function (data) {
                     let name = data.name;
-                    if (name == "") {
+                    if (name == ""
+                        || name == "undefined" // wtf firefox bug
+                    ) {
                         name = genRandomName()
                     }
 
@@ -209,15 +220,49 @@ function inMessageHandler() {
                     // create new player
                     let pl = addPlayer(socket.id, name)
 
-                    // broadcast player data to other users
-                    socket.emit('user_player', {
+                    // send player data to joining user
+                    socket.emit('your_player', {
                         player: pl,
                         name: name,
                     });
-                    socket.broadcast.emit('player_join', {
+                    // broadcast player data to other users
+                    socket.broadcast.emit('new_player_join', {
                         player: pl
                     });
-                });
+                }
+            );
+
+            socket.on('my_player_retry',
+                function () {
+                    // retry player will have same actions as player join
+                    // reset its player data and send it to the player and broadcast to another player
+                    let pl = resetPlayer(socket.id);
+                    // console.log("resetplayer: ", pl)
+
+                    // send player data to retrying user
+                    socket.emit('your_player', {
+                        player: pl,
+                    });
+                    // broadcast player data to other users
+                    socket.broadcast.emit('new_player_join', {
+                        player: pl
+                    });
+                }
+            );
+
+            socket.on('my_player_start',
+                function () {
+                    if (getPlayer(socket.id) !== null) {
+                        pl = getPlayer(socket.id);
+                        pl.setAlive(true);
+                        data = {
+                            id: pl.getId(),
+                            alive: pl.getIsAlive()
+                        }
+                        io.sockets.emit('player_update', data);
+                    }
+                }
+            );
 
             socket.on('player_move',
                 function (msg) {
@@ -249,6 +294,8 @@ function inMessageHandler() {
                 }
             );
 
+
+
             socket.on('player_shoot',
                 function (val) {
                     let blt = playerShoot(socket.id, val.vector);
@@ -272,9 +319,9 @@ function inMessageHandler() {
             });
 
             socket.on('debug_server', function () {
-                // console.log("======================");
-                // console.log("curr players array: ", getPlayersArray());
-                // console.log("----------------------");
+                console.log("======================");
+                console.log("curr players array: ", getPlayersArray());
+                console.log("----------------------");
                 debug("debug_event sent from client")
                 TESTING_VAR = true;
             });

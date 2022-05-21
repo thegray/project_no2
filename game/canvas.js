@@ -1,4 +1,4 @@
-const GAME_STATE_ENUM = Object.freeze({ "INIT": 1, "RUN": 2, "RETRY": 3 });
+const GAME_STATE_ENUM = Object.freeze({ "INIT": 1, "READY": 2, "RUN": 3, "RETRY": 4 });
 
 let MS_SPEED = 2,
     CHAR_RADIUS = 30,
@@ -9,6 +9,24 @@ let Characters = [];
 let CharactersMap = {};
 let BulletsFired = [];
 let GameState = GAME_STATE_ENUM.INIT;
+
+function GameReady() {
+    GameState = GAME_STATE_ENUM.READY;
+}
+
+function GameRun() {
+    PlayerStartEvent();
+    GameState = GAME_STATE_ENUM.RUN;
+}
+
+function GamePauseForRetry() {
+    GameState = GAME_STATE_ENUM.RETRY;
+}
+
+function RetryGame() {
+	EmitPlayerRetryEvent();
+	GameRun();
+}
 
 function charactersUpdate() {
     mainChar.update();
@@ -64,7 +82,6 @@ function setup() {
     CANVAS_HEIGHT = 800; //windowHeight;
     createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     initObjects();
-    tes = createP('aaaa');
 }
 
 function draw() {
@@ -89,10 +106,11 @@ function drawUI() {
     switch (GameState) {
         case GAME_STATE_ENUM.INIT:
             console.log('init..');
-            // UI_GameOver();
+            break;
+        case GAME_STATE_ENUM.READY:
+            UI_GameReady();
             break;
         case GAME_STATE_ENUM.RUN:
-            // UI_GameOver();
             UI_DrawReticle();
             break;
         case GAME_STATE_ENUM.RETRY:
@@ -110,28 +128,21 @@ function initObjects() {
     // testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
     // characters.push(testChar);
     PlayerJoinEvent();
-    GameState = GAME_STATE_ENUM.RUN;
-}
-
-function shoot() {
-    // let delta = (Date.now() - mainChar.lastShoot) / 1000;
-    // if (delta > mainChar.shootCooldown) {
-    //     let mouseVector = mainChar.getMouseVector();
-    //     oneBullet = new bullet(mainChar.getX(), mainChar.getY(),
-    //         mouseVector.x, mouseVector.y,
-    //         mainChar.getId(), mainChar.getColor());
-    //     BulletsFired.push(oneBullet);
-    //     mainChar.lastShoot = Date.now();
-    // }
-
-    // let vector = {
-    //     x: mouseVector.x,
-    //     y: mouseVector.y
-    // }
-    // PlayerShootEvent(vector);
+    GameReady();
 }
 
 function updateController() {
+    if (keyIsDown(32)) { // space
+        // TriggerDebugServer();
+        if (GameState == GAME_STATE_ENUM.RETRY) {
+            RetryGame();
+            return
+        }
+        if (GameState == GAME_STATE_ENUM.READY) {
+            GameRun();
+            return
+        }
+    }
     let e = {}
     if (keyIsDown(87)) { // w
         e.type = "keypress";
@@ -154,13 +165,23 @@ function updateController() {
         eventsProcessor(e);
     }
 
-    if (mouseIsPressed === true) {
-        if (mouseButton === LEFT) {
-            e.type = "mouseclick";
-            e.value = "left";
-            eventsProcessor(e);
-            // shoot();
-            // TriggerDebugServer();
-        }
+    // if (mouseIsPressed === true) {
+    //     if (mouseButton === LEFT) {
+    //         e.type = "mouseclick";
+    //         e.value = "left";
+    //         eventsProcessor(e);
+    //         // shoot();
+    //         // TriggerDebugServer();
+    //     }
+    // }
+}
+
+function mouseClicked(event) {
+    if (GameState != GAME_STATE_ENUM.RUN) {
+        return
     }
+    let e = {}
+    e.type = "mouseclick";
+    e.value = "left";
+    eventsProcessor(e);
 }

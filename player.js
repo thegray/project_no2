@@ -12,7 +12,7 @@ class Player {
         this.color = color;
         this.name = name;
 
-        this.alive = true;
+        this.alive = false; ////
         this.lastShoot = 0;
         this.shootCooldown = CFG.GC.BLT_COOLDOWN;
 
@@ -27,12 +27,24 @@ class Player {
         return this.x;
     }
 
+    setX(x) {
+        this.x = x;
+    }
+
     getY() {
         return this.y;
     }
 
+    setY(y) {
+        this.y = y;
+    }
+
     getRadius() {
         return this.size;
+    }
+
+    setRadius(r) {
+        this.size = r;
     }
 
     getId() {
@@ -53,6 +65,10 @@ class Player {
 
     getAngle() {
         return this.angle;
+    }
+
+    setSpeed(s) {
+        this.speed = s;
     }
 
     // getCurrentTargetVector(targetx, targety) {

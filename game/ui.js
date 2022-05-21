@@ -17,9 +17,27 @@ function drawTutorial() {
 	textFont('Helvetica');
 	textSize(14);
 	fill(235);
-	text("arrow keys or wasd: move", 35, 35);
-	text("mouse: aim", 35, 50);
-	text("left click: fire", 35, 65);
+	text("w a s d key to move", 35, 35);
+	text("move mouse aim", 35, 50);
+	text("left click to shoot", 35, 65);
+}
+
+function UI_GameReady() {
+	push()
+
+	noStroke();
+	fill(0, 0, 0, 95)
+	rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+
+	drawTutorial();
+
+	textFont('Helvetica');
+	textAlign(CENTER);
+	textSize(18);
+	fill(235);
+	let readyText = "press 'space' to play";
+	text(readyText, CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+	pop();
 }
 
 function UI_GameOver() {
@@ -36,27 +54,10 @@ function UI_GameOver() {
 	text("YOU DIED", CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
 
 	textFont('Helvetica');
+	textAlign(CENTER);
 	textSize(18);
 	fill(235);
-
-	// let scoreString = "score: " + score;
-	// text(scoreString, 300, 340);
-	// if (score > highScore) {
-	// 	highScore = score;
-	// 	Cookies.remove('highscore');
-	// 	Cookies.set('highscore', highScore);
-	// }
-	// let highScoreString = "highscore: " + highScore;
-	// text(highScoreString, 300, 360);
-
-	// Retry.show();
-	// Retry.position(250, 380);
-	// Retry.size(100,30);
-	// Retry.style('background-color', '#202020');
-	// Retry.style('color', '#FFFFFF');
-	// Retry.mousePressed(reset);
-
+	let readyText = "press 'space' to try again";
+	text(readyText, CANVAS_WIDTH/2, CANVAS_HEIGHT/2+40);
 	pop();
-
-	// noLoop();
 }

@@ -33,6 +33,7 @@ function InitCurrentPlayers(players) {
 }
 
 function PlayerUpdate(data) {
+    // console.log("handler player_update ", data)
     if (data.id !== undefined) {
         let pl = CharactersMap[data.id];
         if (pl !== undefined) {
@@ -44,6 +45,9 @@ function PlayerUpdate(data) {
             }
             if (data.angle !== undefined) {
                 pl.angle = data.angle;
+            }
+            if (data.alive !== undefined) {
+                pl.alive = data.alive;
             }
         }
     } else {
@@ -87,8 +91,9 @@ function PlayerHit(data) {
         CharactersMap[data.playerId].setAlive(false);
         if (data.playerId == mainChar.getId()) {
             // console.log("trigger dead")
-            GameState = GAME_STATE_ENUM.RETRY;
+            GamePauseForRetry();
         }
+        RemovePlayer(data.playerId);
     }
     RemoveBulletById(data.bulletId);
 }
@@ -111,6 +116,14 @@ function PlayerAngleEvent(val) {
 
 function PlayerShootEvent(val) {
     EmitPlayerShootEvent(val)
+}
+
+function PlayerRetryEvent() {
+    EmitPlayerRetryEvent();
+}
+
+function PlayerStartEvent() {
+    EmitPlayerStartEvent();
 }
 
 function TriggerDebugServer(dir) {
