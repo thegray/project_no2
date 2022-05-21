@@ -22,7 +22,8 @@ class bullet {
     display() {
         push()
         stroke(this.color);
-        fill(this.fillcolor); 
+        // fill(this.fillcolor);
+        fill(255);
         ellipse(this.x, this.y, this.size);
         pop();
     }

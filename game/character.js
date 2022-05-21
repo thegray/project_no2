@@ -82,14 +82,21 @@ class character {
             );
             pop();
 
-            // push();
+            push();
             strokeWeight(3);
             stroke(this.color);
             // noFill();
             // line(this.x, this.y,
             //     this.x + cos(this.angle) * 40, this.y + sin(this.angle) * 40);
             ellipse(this.x, this.y, this.size, this.size);
-            // pop();
+
+            // textFont('Helvetica');
+            textAlign(CENTER);
+            textSize(14);
+            fill(255);
+            text(this.name, this.x, this.y+30);
+
+            pop();
         }
     }
 
