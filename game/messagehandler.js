@@ -4,7 +4,6 @@ function UserPlayerCreate(mainPlayer) {
     mainChar.CharacterInit(mainPlayer.x, mainPlayer.y, mainPlayer.size, mainPlayer.speed, mainPlayer.id, col,
         mainPlayer.shootCooldown, mainPlayer.name);
     mainChar.setAlive(true);
-    // Characters.push(mainChar);
     CharactersMap[mainChar.id] = mainChar;
 }
 
@@ -14,7 +13,6 @@ function PlayerJoinCreate(player) {
     nc.CharacterInit(player.x, player.y, player.size, player.speed, player.id, col,
         player.shootCooldown, player.name);
     nc.setAlive(player.alive);
-    // Characters.push(nc);
     CharactersMap[nc.id] = nc;
 }
 
@@ -26,14 +24,12 @@ function InitCurrentPlayers(players) {
             let col = color(players[i].color.r, players[i].color.g, players[i].color.b);
             nc.CharacterInit(players[i].x, players[i].y, players[i].size, players[i].speed, players[i].id, col, players[i].name);
             nc.setAlive(players[i].alive);
-            // Characters.push(nc);
             CharactersMap[nc.id] = nc;
         }
     }
 }
 
 function PlayerUpdate(data) {
-    // console.log("handler player_update ", data)
     if (data.id !== undefined) {
         let pl = CharactersMap[data.id];
         if (pl !== undefined) {
@@ -57,11 +53,6 @@ function PlayerUpdate(data) {
 }
 
 function RemovePlayer(id) {
-    // let index = Characters.map(function (e) { return e.id; }).indexOf(id);
-    // if (index > -1) {
-    //     Characters[index].alive = false;
-    //     Characters.splice(index, 1);
-    // }
     if (CharactersMap[id] !== undefined) {
         delete CharactersMap[id];
     }
@@ -86,11 +77,8 @@ function PlayerShoot(blt) {
 // event handler of Player got hit by a bullet
 function PlayerHit(data) {
     if (CharactersMap[data.playerId] !== undefined) {
-        // console.log("debug 1: ", CharactersMap[data.playerId]);
-        // console.log("debug 2: ", mainChar);
         CharactersMap[data.playerId].setAlive(false);
         if (data.playerId == mainChar.getId()) {
-            // console.log("trigger dead")
             GamePauseForRetry();
         }
         RemovePlayer(data.playerId);

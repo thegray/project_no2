@@ -33,9 +33,6 @@ function charactersUpdate() {
 }
 
 function charactersRender() {
-    // for (var i = 0; i < Characters.length; i++) {
-    //     Characters[i].display();
-    // }
     for (let [_, c] of Object.entries(CharactersMap)) {
         c.display();
     }
@@ -52,27 +49,18 @@ function bulletsUpdate() {
     for (var i = 0; i < BulletsFired.length; i++) {
         BulletsFired[i].update();
         if (BulletsFired[i].outOfBounds()) {
-            // console.log("bullet out of bound", BulletsFired[i])
             BulletsFired.splice(i, 1);
         }
-        // else if (BulletsFired[i].hitScan()) {
-        //     BulletsFired.splice(i, 1);
-        // }
     }
 }
 
 function bulletsRender() {
     for (var i = 0; i < BulletsFired.length; i++) {
         BulletsFired[i].display();
-        // console.log("the bullet: ", BulletsFired[i])
     }
 }
 
 function eventsProcessor(event) {
-    // let event = {
-    //     type: 'keypress',
-    //     value: 'x'
-    //   };
     mainChar.inputHandler(event)
 }
 
@@ -122,11 +110,7 @@ function drawUI() {
 }
 
 function initObjects() {
-    // console.log("init object mainChar")
     mainChar = new character();
-    // characters.push(mainChar);
-    // testChar = new character(200, 200, CHAR_RADIUS, MS_SPEED, 1, color(230, 255, 0));
-    // characters.push(testChar);
     PlayerJoinEvent();
     GameReady();
 }
@@ -164,16 +148,6 @@ function updateController() {
         e.value = "right";
         eventsProcessor(e);
     }
-
-    // if (mouseIsPressed === true) {
-    //     if (mouseButton === LEFT) {
-    //         e.type = "mouseclick";
-    //         e.value = "left";
-    //         eventsProcessor(e);
-    //         // shoot();
-    //         // TriggerDebugServer();
-    //     }
-    // }
 }
 
 function mouseClicked(event) {

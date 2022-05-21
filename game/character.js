@@ -99,25 +99,21 @@ class character {
                 let direction = event.value;
                 if (direction === "up") { // w
                     if (this.y > this.size) {
-                        // this.y -= this.speed;
                         PlayerMoveEvent("up");
                     }
                 }
                 if (direction === "left") { // a
                     if (this.x > this.size) {
-                        // this.x -= this.speed;
                         PlayerMoveEvent("left");
                     }
                 }
                 if (direction === "down") { // s
                     if (this.y < CANVAS_HEIGHT - this.size) {
-                        // this.y += this.speed;
                         PlayerMoveEvent("down");
                     }
                 }
                 if (direction === "right") { // d
                     if (this.x < CANVAS_WIDTH - this.size) {
-                        // this.x += this.speed;
                         PlayerMoveEvent("right");
                     }
                 }
@@ -137,16 +133,4 @@ class character {
             }
         }
     }
-
-    // hitScan(){
-    // 	for (var i = 0; i < targetBalloons.length; i++){
-    // 		var collideOrNot = collideCircleCircle(this.x, this.y, 10, targetBalloons[i].myX(), targetBalloons[i].myY(), targetBalloons[i].myR())
-    // 		if (collideOrNot){
-    // 			targetBalloons.splice(i,1);
-    // 			score += 1;
-    // 			return true;
-    // 		}
-    // 	}
-    // 	return false;
-    // }
 }
