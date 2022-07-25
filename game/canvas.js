@@ -47,7 +47,7 @@ function RemoveBulletById(id) {
 
 function bulletsUpdate() {
     for (var i = 0; i < BulletsFired.length; i++) {
-        BulletsFired[i].update();
+        BulletsFired[i].update(deltaTime);
         if (BulletsFired[i].outOfBounds()) {
             BulletsFired.splice(i, 1);
         }
@@ -65,6 +65,7 @@ function eventsProcessor(event) {
 }
 
 function setup() {
+    frameRate(60);
     iToTheta = TWO_PI / 3;
     CANVAS_WIDTH = 1024; //windowWidth; 
     CANVAS_HEIGHT = 800; //windowHeight;
@@ -73,14 +74,17 @@ function setup() {
 }
 
 function draw() {
-    update();
+    update(deltaTime);
     render();
 }
 
-function update() {
+function update(deltaTime) {
+    if (deltaTime > 0.05) {
+        deltaTime = 0.05;
+    }
     updateController();
-    charactersUpdate();
-    bulletsUpdate();
+    charactersUpdate(deltaTime);
+    bulletsUpdate(deltaTime);
 }
 
 function render() {

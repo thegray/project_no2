@@ -28,9 +28,9 @@ class bullet {
         pop();
     }
 
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
+    update(deltaTime) {
+        this.x += this.vx * deltaTime;
+        this.y += this.vy * deltaTime;
         this.vx *= 0.994;
         this.vy *= 0.994;
     }
