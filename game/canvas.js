@@ -47,7 +47,7 @@ function RemoveBulletById(id) {
 
 function bulletsUpdate() {
     for (var i = 0; i < BulletsFired.length; i++) {
-        BulletsFired[i].update(deltaTime);
+        BulletsFired[i].update();
         if (BulletsFired[i].outOfBounds()) {
             BulletsFired.splice(i, 1);
         }
@@ -74,17 +74,14 @@ function setup() {
 }
 
 function draw() {
-    update(deltaTime);
+    updateState();
     render();
 }
 
-function update(deltaTime) {
-    if (deltaTime > 0.05) {
-        deltaTime = 0.05;
-    }
+function updateState() {
     updateController();
-    charactersUpdate(deltaTime);
-    bulletsUpdate(deltaTime);
+    charactersUpdate();
+    bulletsUpdate();
 }
 
 function render() {
