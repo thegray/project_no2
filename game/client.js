@@ -7,7 +7,7 @@ function logger(...args) {
 
 // const socket = io(URL, { autoConnect: false });
 
-const URL = "http://localhost:8080";
+const URL = window.location.origin;
 const socket = io.connect(URL, {
     reconnection: false
 });
