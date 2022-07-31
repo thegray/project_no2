@@ -31,8 +31,8 @@ class bullet {
     update() {
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
-        // this.vx *= 0.994;
-        // this.vy *= 0.994;
+        this.vx *= 0.994;
+        this.vy *= 0.994;
     }
 
     outOfBounds() {

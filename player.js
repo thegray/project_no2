@@ -2,7 +2,7 @@ var CFG = require('./config.js')
 
 class Player {
     constructor(
-        x, y, size, speed, id, color, name
+        x, y, size, speed, id, color, name, time
     ) {
         this.x = x;
         this.y = y;
@@ -17,6 +17,10 @@ class Player {
         this.shootCooldown = CFG.GC.BLT_COOLDOWN;
 
         this.angle = 0;
+
+        this.time = time;
+        this.messages = [];
+
     }
 
     getMouseVector() {
@@ -95,7 +99,7 @@ class Player {
         this.lastShoot = Date.now();
     }
 
-    inputHandler(direction) {
+    moveHandler(direction) {
         if (this.alive === true) {
             if (direction === "up") { // w
                 if (this.y > this.size) {

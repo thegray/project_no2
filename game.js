@@ -50,6 +50,7 @@ function gsInit() {
 
 function gameUpdate(delta) {
     updateBullets(delta);
+    playerUpdate();
     // sendMessages();
 }
 
@@ -68,6 +69,34 @@ function sendMessages(event, msg) {
 // code for player part
 
 var playersMap = {}
+
+function playerUpdate() {
+    currentTime = Date.now();
+
+    for (var pId in playersMap) {
+        if (playersMap.hasOwnProperty(pId)) {
+            var player = playersMap[pId];
+            // console.log(player);
+            if (player.getIsAlive()) {
+                while (player.messages.length > 0) {
+                    const movement = player.messages.shift();
+                    if (player.time + movement.deltaTime > currentTime) {
+                        movement.deltaTime = currentTime - player.time;
+                    }
+                    player.time += movement.deltaTime;
+                    player.moveHandler(movement);
+                }
+
+                data = {
+                    id: pl.getId(),
+                    x: pl.getX(),
+                    y: pl.getY()
+                }
+                io.to(pId).emit('player_update', data);
+            }
+        }
+    }
+}
 
 function getPlayer(sid) {
     // sid is socket.id
@@ -94,7 +123,8 @@ function createNewPlayer(name) {
             g: getRandomArbitrary(50, 255), // to prevent black
             b: getRandomArbitrary(0, 230)
         },
-        name // name
+        name, // name
+        Date.now()
     );
     return pl;
 }
@@ -268,14 +298,17 @@ function inMessageHandler() {
                 function (msg) {
                     if (getPlayer(socket.id) !== null) {
                         pl = getPlayer(socket.id);
-                        if (pl.inputHandler(msg.direction)) {
-                            data = {
-                                id: pl.getId(),
-                                x: pl.getX(),
-                                y: pl.getY()
-                            }
-                            io.sockets.emit('player_update', data);
+                        if (pl !== null && pl.getIsAlive()) {
+                            pl.messages.push(msg.direction);
                         }
+                        // if (pl.moveHandler(msg.direction)) {
+                        //     data = {
+                        //         id: pl.getId(),
+                        //         x: pl.getX(),
+                        //         y: pl.getY()
+                        //     }
+                        //     io.sockets.emit('player_update', data);
+                        // }
                     }
                 }
             );
@@ -289,7 +322,7 @@ function inMessageHandler() {
                             id: pl.getId(),
                             angle: pl.getAngle()
                         }
-                        io.sockets.emit('player_update', data);
+                        // io.sockets.emit('player_update', data);
                     }
                 }
             );
