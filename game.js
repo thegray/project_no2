@@ -88,14 +88,44 @@ function playerUpdate() {
                 }
 
                 data = {
-                    id: pl.getId(),
-                    x: pl.getX(),
-                    y: pl.getY()
+                    id: player.getId(),
+                    x: player.getX(),
+                    y: player.getY(),
+                    tickNumber: player.messages.tickNumber + 1 // TODO : Add in client
                 }
                 io.to(pId).emit('player_update', data);
             }
         }
     }
+
+    // appproach 1.
+    // send worldUpdate to each connected players without its own data
+    for (var pId in playersMap) {
+        if (playersMap.hasOwnProperty(pId)) {
+            var player = playersMap[pId];
+            worldUpdateMsg = {
+                data: []
+            }
+            for (var pId2 in playersMap) {
+                if (playersMap.hasOwnProperty(pId2)) {
+                    if (pId === pId2) continue;
+
+                    const other = playersMap[pId2];
+                    worldUpdateMsg.data.push({
+                        id: other.getId(),
+                        x: other.getX(),
+                        y: other.getY(),
+                        angle: other.getAngle()
+                    });
+                }
+            }
+            io.to(pId).emit('world_update', worldUpdateMsg);
+        }
+    }
+
+    // approach 2.
+    // broadcast worldUpdate to all connected players
+    // ...
 }
 
 function getPlayer(sid) {

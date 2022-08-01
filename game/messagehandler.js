@@ -49,7 +49,26 @@ function PlayerUpdate(data) {
     } else {
         console.log("broken message on player_update!")
     }
+}
 
+function WorldUpdate(data) {
+    if (data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+            let datum = data[i];
+            let pl = CharactersMap[datum.id];
+            if (pl !== undefined) {
+                if (datum.x !== undefined) {
+                    pl.x = datum.x;
+                }
+                if (datum.y !== undefined) {
+                    pl.y = datum.y;
+                }
+                if (datum.angle !== undefined) {
+                    pl.angle = datum.angle;
+                }
+            }
+        }
+    }
 }
 
 function RemovePlayer(id) {

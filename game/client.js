@@ -60,6 +60,14 @@ socket.on('player_update',
     }
 );
 
+// receive world update
+socket.on('world_update',
+    function (msg) {
+        logger("[event] world_update: ", msg)
+        WorldUpdate(msg.data);
+    }
+);
+
 socket.on('player_shoot',
     function (data) {
         // logger("[event] player_shoot: ", data)
