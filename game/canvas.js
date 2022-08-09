@@ -10,6 +10,12 @@ let CharactersMap = {};
 let BulletsFired = [];
 let GameState = GAME_STATE_ENUM.INIT;
 
+let gInput;
+let inputsArray = [];
+let inputHistory = [];
+let historySize = 1024;
+let tickNumber = 0;
+
 function GameReady() {
     GameState = GAME_STATE_ENUM.READY;
 }
@@ -24,8 +30,8 @@ function GamePauseForRetry() {
 }
 
 function RetryGame() {
-	EmitPlayerRetryEvent();
-	GameRun();
+    EmitPlayerRetryEvent();
+    GameRun();
 }
 
 function charactersUpdate() {
@@ -79,7 +85,7 @@ function draw() {
 }
 
 function updateState() {
-    updateController();
+    updateController(deltaTime);
     charactersUpdate();
     bulletsUpdate();
 }
@@ -112,11 +118,46 @@ function drawUI() {
 
 function initObjects() {
     mainChar = new character();
+    gInput = new inputs();
     PlayerJoinEvent();
     GameReady();
 }
 
-function updateController() {
+function keyPressed() {
+    if (keyCode === 87) { // w
+        gInput.moveUp = true;
+    }
+    if (keyCode === 65) { // a
+        gInput.moveLeft = true;
+    }
+    if (keyCode === 83) { // s
+        gInput.moveDown = true;
+    }
+    if (keyCode === 68) { // d
+        gInput.moveRight = true;
+    }
+    
+    return false; // prevent any default behavior
+}
+
+function keyReleased() {
+    if (keyCode === 87) { // w
+        gInput.moveUp = false;
+    }
+    if (keyCode === 65) { // a
+        gInput.moveLeft = false;
+    }
+    if (keyCode === 83) { // s
+        gInput.moveDown = false;
+    }
+    if (keyCode === 68) { // d
+        gInput.moveRight = false;
+    }
+
+    return false; // prevent any default behavior
+}
+
+function updateController(dt) {
     if (keyIsDown(32)) { // space
         // TriggerDebugServer();
         if (GameState == GAME_STATE_ENUM.RETRY) {
@@ -128,27 +169,27 @@ function updateController() {
             return
         }
     }
-    let e = {}
-    if (keyIsDown(87)) { // w
-        e.type = "keypress";
-        e.value = "up";
-        eventsProcessor(e);
-    }
-    if (keyIsDown(65)) { // a
-        e.type = "keypress";
-        e.value = "left";
-        eventsProcessor(e);
-    }
-    if (keyIsDown(83)) { // s
-        e.type = "keypress";
-        e.value = "down";
-        eventsProcessor(e);
-    }
-    if (keyIsDown(68)) { // d
-        e.type = "keypress";
-        e.value = "right";
-        eventsProcessor(e);
-    }
+    
+    gInput.deltaTime = dt;
+    const inputToSend = gInput.clone();
+    inputsArray.push(inputToSend);
+    PlayerInputEvent({
+        tickNumber: tickNumber,
+        inputsArray: inputsArray
+    });
+    inputsArray.length = 0;
+    inputHistory[tickNumber % historySize] = {
+        x: mainChar.getX(),
+        y: mainChar.getY(),
+        inputs: inputToSend
+    };
+
+    mainChar.move(gInput);
+
+    // process msg from server part
+    // ...
+
+    tickNumber++;
 }
 
 function mouseClicked(event) {

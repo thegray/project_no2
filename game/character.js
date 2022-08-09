@@ -140,4 +140,29 @@ class character {
             }
         }
     }
+
+    move(inputs) {
+        const dt = inputs.deltaTime / 10;
+
+        if (inputs.moveUp) {
+            if (this.y > this.size) {                
+                this.y -= this.speed * dt;
+            }
+        }
+        if (inputs.moveLeft) {
+            if (this.x > this.size) {
+                this.x -= this.speed * dt;
+            }
+        }
+        if (inputs.moveDown) {
+            if (this.y < CANVAS_HEIGHT - this.size) {
+                this.y += this.speed * dt;
+            }
+        }
+        if (inputs.moveRight) {
+            if (this.x < CANVAS_WIDTH - this.size) {
+                this.x += this.speed * dt;
+            }
+        }
+    }
 }

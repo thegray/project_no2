@@ -136,4 +136,10 @@ function PlayerStartEvent() {
 function TriggerDebugServer(dir) {
     EmitDebugServer();
 }
+
+// ---- new
+
+function PlayerInputEvent(msg) {
+    EmitPlayerInputEvent(msg);
+}
 // ---------------- end of server part ----------------

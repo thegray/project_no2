@@ -63,7 +63,7 @@ socket.on('player_update',
 // receive world update
 socket.on('world_update',
     function (msg) {
-        logger("[event] world_update: ", msg)
+        // logger("[event] world_update: ", msg)
         WorldUpdate(msg.data);
     }
 );
@@ -139,4 +139,12 @@ function EmitDebugServer() {
     // logger("[event][debug] send debug_server")
     console.log(mainChar)
     socket.emit('debug_server');
+}
+
+// --- new
+
+function EmitPlayerInputEvent(msg) {
+    socket.emit('pl_input', {
+        msg: msg
+    });
 }
