@@ -79,12 +79,15 @@ function playerUpdate() {
             // console.log(player);
             if (player.getIsAlive()) {
                 while (player.messages.length > 0) {
-                    const movement = player.messages.shift();
-                    if (player.time + movement.deltaTime > currentTime) {
-                        movement.deltaTime = currentTime - player.time;
+                    const msgs = player.messages.shift();
+                    while (msgs.inputsArray.length > 0) {
+                        const inputs = msgs.inputsArray.shift();
+                        if (player.time + inputs.deltaTime > currentTime) {
+                            inputs.deltaTime = currentTime - player.time;
+                        }
+                        player.time += inputs.deltaTime;
+                        player.moveHandler(inputs);
                     }
-                    player.time += movement.deltaTime;
-                    player.moveHandler(movement);
                 }
 
                 data = {
@@ -324,12 +327,12 @@ function inMessageHandler() {
                 }
             );
 
-            socket.on('player_move',
+            socket.on('pl_input',
                 function (msg) {
                     if (getPlayer(socket.id) !== null) {
                         pl = getPlayer(socket.id);
                         if (pl !== null && pl.getIsAlive()) {
-                            pl.messages.push(msg.direction);
+                            pl.messages.push(msg);
                         }
                         // if (pl.moveHandler(msg.direction)) {
                         //     data = {

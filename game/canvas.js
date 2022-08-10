@@ -16,6 +16,8 @@ let inputHistory = [];
 let historySize = 1024;
 let tickNumber = 0;
 
+let gServerMsgs = [];
+
 function GameReady() {
     GameState = GAME_STATE_ENUM.READY;
 }
@@ -187,7 +189,18 @@ function updateController(dt) {
     mainChar.move(gInput);
 
     // process msg from server part
-    // ...
+    while (gServerMsgs.length > 0) {
+        const msg = gServerMsgs.shift();
+
+        switch (msg.type) {
+            case 'pl_update':
+                // ...
+                break;
+            case 'wl_update':
+                // ...
+                break;
+        }
+    }
 
     tickNumber++;
 }

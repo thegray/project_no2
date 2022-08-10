@@ -31,44 +31,54 @@ function InitCurrentPlayers(players) {
 
 function PlayerUpdate(data) {
     if (data.id !== undefined) {
-        let pl = CharactersMap[data.id];
-        if (pl !== undefined) {
-            if (data.x !== undefined) {
-                pl.x = data.x;
-            }
-            if (data.y !== undefined) {
-                pl.y = data.y;
-            }
-            if (data.angle !== undefined) {
-                pl.angle = data.angle;
-            }
-            if (data.alive !== undefined) {
-                pl.alive = data.alive;
-            }
-        }
+        // let pl = CharactersMap[data.id];
+        // if (pl !== undefined) {
+        //     if (data.x !== undefined) {
+        //         pl.x = data.x;
+        //     }
+        //     if (data.y !== undefined) {
+        //         pl.y = data.y;
+        //     }
+        //     if (data.angle !== undefined) {
+        //         pl.angle = data.angle;
+        //     }
+        //     if (data.alive !== undefined) {
+        //         pl.alive = data.alive;
+        //     }
+        // }
+        msg = {
+            type: 'pl_update',
+            data: data
+        };
+        gServerMsgs.push(msg);
     } else {
         console.log("broken message on player_update!")
     }
 }
 
 function WorldUpdate(data) {
-    if (data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-            let datum = data[i];
-            let pl = CharactersMap[datum.id];
-            if (pl !== undefined) {
-                if (datum.x !== undefined) {
-                    pl.x = datum.x;
-                }
-                if (datum.y !== undefined) {
-                    pl.y = datum.y;
-                }
-                if (datum.angle !== undefined) {
-                    pl.angle = datum.angle;
-                }
-            }
-        }
-    }
+    // if (data.length > 0) {
+    //     for (let i = 0; i < data.length; i++) {
+    //         let datum = data[i];
+    //         let pl = CharactersMap[datum.id];
+    //         if (pl !== undefined) {
+    //             if (datum.x !== undefined) {
+    //                 pl.x = datum.x;
+    //             }
+    //             if (datum.y !== undefined) {
+    //                 pl.y = datum.y;
+    //             }
+    //             if (datum.angle !== undefined) {
+    //                 pl.angle = datum.angle;
+    //             }
+    //         }
+    //     }
+    // }
+    msg = {
+        type: 'wl_update',
+        data: data
+    };
+    gServerMsgs.push(msg);
 }
 
 function RemovePlayer(id) {

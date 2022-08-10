@@ -99,32 +99,29 @@ class Player {
         this.lastShoot = Date.now();
     }
 
-    moveHandler(direction) {
-        if (this.alive === true) {
-            if (direction === "up") { // w
-                if (this.y > this.size) {
-                    this.y -= this.speed;
-                }
+    moveHandler(inputs) {
+        const dt = inputs.deltaTime / 10;
+
+        if (inputs.moveUp) {
+            if (this.y > this.size) {
+                this.y -= this.speed * dt;
             }
-            if (direction === "left") { // a
-                if (this.x > this.size) {
-                    this.x -= this.speed;
-                }
-            }
-            if (direction === "down") { // s
-                if (this.y < CFG.GC.CANVAS_HEIGHT - this.size) {
-                    this.y += this.speed;
-                }
-            }
-            if (direction === "right") { // d
-                if (this.x < CFG.GC.CANVAS_WIDTH - this.size) {
-                    this.x += this.speed;
-                }
-            }
-            return true;
         }
-        else 
-            return false;
+        if (inputs.moveLeft) {
+            if (this.x > this.size) {
+                this.x -= this.speed * dt;
+            }
+        }
+        if (inputs.moveDown) {
+            if (this.y < CFG.GC.CANVAS_HEIGHT - this.size) {
+                this.y += this.speed * dt;
+            }
+        }
+        if (inputs.moveRight) {
+            if (this.x < CFG.GC.CANVAS_WIDTH - this.size) {
+                this.x += this.speed * dt;
+            }
+        }
     }
 
     // hitScan(){
