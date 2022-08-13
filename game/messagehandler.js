@@ -64,12 +64,9 @@ function PlayerUpdate(data) {
 
 function WorldUpdate(msg) {
     if (msg.data.length > 0) {
-        // console.log("WorldUpdate data:", data.data)
         for (let i = 0; i < msg.data.length; i++) {
             let datum = msg.data[i];
             let pl = CharactersMap[datum.id];
-            console.log("WorldUpdate id:", datum.id)
-            console.log("WorldUpdate cm:", CharactersMap)
             if (pl !== undefined) {
                 
                 if (datum.x !== undefined) {

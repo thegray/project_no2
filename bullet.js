@@ -65,9 +65,11 @@ class Bullet {
         this.onFlight = onFlight;
     }
 
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
+    update(dt) {
+        let timeSpeed = dt * 1000;
+        this.x += this.vx * timeSpeed;
+        this.y += this.vy * timeSpeed;
+        // console.log(dt, this.x, this.y)
         this.vx *= 0.994;
         this.vy *= 0.994;
     }

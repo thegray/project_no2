@@ -232,7 +232,7 @@ function populateBulletPool() {
 function updateBullets(delta) {
     bulletPool.forEach(bullet => {
         if (bullet.isOnFlight()) {
-            bullet.update();
+            bullet.update(delta);
 
             let pId = bulletPlayersHit(bullet);
             if (pId != null) {
@@ -253,14 +253,19 @@ function updateBullets(delta) {
 function bulletPlayersHit(bullet) {
     for (var key of Object.keys(playersMap)) {
         let player = playersMap[key];
-        if (player.getIsAlive() && player.getId() != bullet.getPlayerId()) {
-            let isHit = circleColliderCheck(bullet, player);
-            if (isHit) {
-                // set player alive to false
-                player.setAlive(false);
-
-                return player.id;
+        if (player.getId() != bullet.getPlayerId()) {
+            // console.log("bullet: ", bullet.x, bullet.y, bullet.playerId)
+            // console.log("player: ", player.x, player.y, player.id, player.alive)
+            if (player.getIsAlive()) {
+                let isHit = circleColliderCheck(bullet, player);
+                if (isHit) {
+                    // set player alive to false
+                    player.setAlive(false);
+    
+                    return player.id;
+                }
             }
+            console.log("---------------------")
         }
     }
     return null;
