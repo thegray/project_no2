@@ -37,7 +37,7 @@ function RetryGame() {
 }
 
 function charactersUpdate() {
-    mainChar.update();
+    mainChar.update(); // this just to calculate angle and send it to server
 }
 
 function charactersRender() {
@@ -81,6 +81,13 @@ function setup() {
     initObjects();
 }
 
+function initObjects() {
+    mainChar = new character();
+    gInput = new inputs();
+    PlayerJoinEvent();
+    GameReady();
+}
+
 function draw() {
     updateState();
     render();
@@ -118,11 +125,52 @@ function drawUI() {
     }
 }
 
-function initObjects() {
-    mainChar = new character();
-    gInput = new inputs();
-    PlayerJoinEvent();
-    GameReady();
+function updateController(dt) {
+    if (keyIsDown(32)) { // space
+        // TriggerDebugServer();
+        if (GameState == GAME_STATE_ENUM.RETRY) {
+            RetryGame();
+            return
+        }
+        if (GameState == GAME_STATE_ENUM.READY) {
+            GameRun();
+            return
+        }
+    }
+    
+    gInput.deltaTime = dt;
+    const inputToSend = gInput.clone();
+    inputsArray.push(inputToSend);
+    PlayerInputEvent({
+        tickNumber: tickNumber,
+        inputsArray: inputsArray
+    });
+
+    inputsArray.length = 0;
+    inputHistory[tickNumber % historySize] = {
+        x: mainChar.getX(),
+        y: mainChar.getY(),
+        inputs: inputToSend
+    };
+
+    mainChar.move(gInput);
+
+    // process msg from server part
+    while (gServerMsgs.length > 0) {
+        const msg = gServerMsgs.shift();
+
+        switch (msg.type) {
+            case 'pl_update':
+                PlayerUpdate(msg.data);
+                break;
+                
+            case 'wl_update':
+                WorldUpdate(msg.data);
+                break;
+        }
+    }
+
+    tickNumber++;
 }
 
 function keyPressed() {
@@ -157,52 +205,6 @@ function keyReleased() {
     }
 
     return false; // prevent any default behavior
-}
-
-function updateController(dt) {
-    if (keyIsDown(32)) { // space
-        // TriggerDebugServer();
-        if (GameState == GAME_STATE_ENUM.RETRY) {
-            RetryGame();
-            return
-        }
-        if (GameState == GAME_STATE_ENUM.READY) {
-            GameRun();
-            return
-        }
-    }
-    
-    gInput.deltaTime = dt;
-    const inputToSend = gInput.clone();
-    inputsArray.push(inputToSend);
-    PlayerInputEvent({
-        tickNumber: tickNumber,
-        inputsArray: inputsArray
-    });
-    inputsArray.length = 0;
-    inputHistory[tickNumber % historySize] = {
-        x: mainChar.getX(),
-        y: mainChar.getY(),
-        inputs: inputToSend
-    };
-
-    mainChar.move(gInput);
-
-    // process msg from server part
-    while (gServerMsgs.length > 0) {
-        const msg = gServerMsgs.shift();
-
-        switch (msg.type) {
-            case 'pl_update':
-                // ...
-                break;
-            case 'wl_update':
-                // ...
-                break;
-        }
-    }
-
-    tickNumber++;
 }
 
 function mouseClicked(event) {

@@ -52,19 +52,36 @@ socket.on('player_leave',
     }
 );
 
+/////// remove
+// socket.on('player_start',
+//     function (data) {
+//         // logger("[event] player_start: ", data)
+//         PlayerStart(data);
+//     }
+// );
+
+
 // receive updates of a player
 socket.on('player_update',
     function (data) {
         // logger("[event] player_update: ", data)
-        PlayerUpdate(data);
+        msg = {
+            type: 'pl_update',
+            data: data
+        };
+        QueueMsg(msg);
     }
 );
 
 // receive world update
 socket.on('world_update',
-    function (msg) {
+    function (data) {
         // logger("[event] world_update: ", msg)
-        WorldUpdate(msg.data);
+        msg = {
+            type: 'wl_update',
+            data: data
+        };
+        QueueMsg(msg);
     }
 );
 

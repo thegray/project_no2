@@ -80,23 +80,27 @@ function playerUpdate() {
             if (player.getIsAlive()) {
                 while (player.messages.length > 0) {
                     const msgs = player.messages.shift();
-                    while (msgs.inputsArray.length > 0) {
-                        const inputs = msgs.inputsArray.shift();
-                        if (player.time + inputs.deltaTime > currentTime) {
-                            inputs.deltaTime = currentTime - player.time;
+                    if (msgs.inputsArray !== undefined) {
+                        // console.log("3 ", msgs.inputsArray)
+                        while (msgs.inputsArray.length > 0) {
+                            const inputs = msgs.inputsArray.shift();
+                            if (player.time + inputs.deltaTime > currentTime) {
+                                inputs.deltaTime = currentTime - player.time;
+                            }
+                            player.time += inputs.deltaTime;
+                            player.moveHandler(inputs);
                         }
-                        player.time += inputs.deltaTime;
-                        player.moveHandler(inputs);
-                    }
-                }
 
-                data = {
-                    id: player.getId(),
-                    x: player.getX(),
-                    y: player.getY(),
-                    tickNumber: player.messages.tickNumber + 1 // TODO : Add in client
-                }
-                io.to(pId).emit('player_update', data);
+                        data = {
+                            id: player.getId(),
+                            x: player.getX(),
+                            y: player.getY(),
+                            alive: player.getIsAlive(),
+                            tickNumber: msgs.tickNumber + 1
+                        }
+                        io.to(pId).emit('player_update', data);
+                    }                    
+                } 
             }
         }
     }
@@ -118,6 +122,7 @@ function playerUpdate() {
                         id: other.getId(),
                         x: other.getX(),
                         y: other.getY(),
+                        alive: other.getIsAlive(),
                         angle: other.getAngle()
                     });
                 }
@@ -278,7 +283,9 @@ function inMessageHandler() {
                     }
 
                     info(`[event] (socket id: ${socket.id}) user join: ${name}`);
-                    socket.emit('cur_players', getPlayersArray());
+
+                    let currPlayers = getPlayersArray();
+                    socket.emit('cur_players', currPlayers);
 
                     // create new player
                     let pl = addPlayer(socket.id, name)
@@ -288,6 +295,7 @@ function inMessageHandler() {
                         player: pl,
                         name: name,
                     });
+
                     // broadcast player data to other users
                     socket.broadcast.emit('new_player_join', {
                         player: pl
@@ -320,9 +328,11 @@ function inMessageHandler() {
                         pl.setAlive(true);
                         data = {
                             id: pl.getId(),
+                            // x: pl.getX(),
+                            // y: pl.getY(),
                             alive: pl.getIsAlive()
                         }
-                        io.sockets.emit('player_update', data);
+                        // io.sockets.emit('player_start', data); /////// remove
                     }
                 }
             );
@@ -331,8 +341,10 @@ function inMessageHandler() {
                 function (msg) {
                     if (getPlayer(socket.id) !== null) {
                         pl = getPlayer(socket.id);
-                        if (pl !== null && pl.getIsAlive()) {
-                            pl.messages.push(msg);
+                        if (pl !== null
+                             && pl.getIsAlive()
+                             ) {
+                            pl.messages.push(msg.msg);
                         }
                         // if (pl.moveHandler(msg.direction)) {
                         //     data = {

@@ -22,68 +22,87 @@ function InitCurrentPlayers(players) {
         for (var i = 0; i < len; i++) {
             nc = new character();
             let col = color(players[i].color.r, players[i].color.g, players[i].color.b);
-            nc.CharacterInit(players[i].x, players[i].y, players[i].size, players[i].speed, players[i].id, col, players[i].name);
+            nc.CharacterInit(players[i].x, players[i].y, players[i].size, players[i].speed, players[i].id, col, players[i].shootCooldown, players[i].name);
             nc.setAlive(players[i].alive);
             CharactersMap[nc.id] = nc;
         }
     }
 }
 
+function QueueMsg(msg) {
+    gServerMsgs.push(msg);
+}
+
 function PlayerUpdate(data) {
     if (data.id !== undefined) {
-        // let pl = CharactersMap[data.id];
-        // if (pl !== undefined) {
-        //     if (data.x !== undefined) {
-        //         pl.x = data.x;
-        //     }
-        //     if (data.y !== undefined) {
-        //         pl.y = data.y;
-        //     }
-        //     if (data.angle !== undefined) {
-        //         pl.angle = data.angle;
-        //     }
-        //     if (data.alive !== undefined) {
-        //         pl.alive = data.alive;
-        //     }
-        // }
-        msg = {
-            type: 'pl_update',
-            data: data
-        };
-        gServerMsgs.push(msg);
+        let history = inputHistory[data.tickNumber % historySize];
+        // console.log("data: ", data)
+        // console.log("history: ", history)
+        const error = Math.hypot( data.x - history.x, data.y - history.y )
+        //  + Math.abs( serverState.rotation - history.rotation );
+        if (error > 0.0001) {
+            console.log( 'correcting' );
+            mainChar.x = data.x;
+            mainChar.y = data.y;
+            
+            let rewindTickNumber = data.tickNumber;
+
+            while (rewindTickNumber <= tickNumber) {
+                history = inputHistory[rewindTickNumber % historySize];
+                history.x = mainChar.x;
+                history.y = mainChar.y;
+
+                mainChar.move(history.inputs);
+
+                rewindTickNumber++;
+            }
+        }
     } else {
         console.log("broken message on player_update!")
     }
 }
 
-function WorldUpdate(data) {
-    // if (data.length > 0) {
-    //     for (let i = 0; i < data.length; i++) {
-    //         let datum = data[i];
-    //         let pl = CharactersMap[datum.id];
-    //         if (pl !== undefined) {
-    //             if (datum.x !== undefined) {
-    //                 pl.x = datum.x;
-    //             }
-    //             if (datum.y !== undefined) {
-    //                 pl.y = datum.y;
-    //             }
-    //             if (datum.angle !== undefined) {
-    //                 pl.angle = datum.angle;
-    //             }
-    //         }
-    //     }
-    // }
-    msg = {
-        type: 'wl_update',
-        data: data
-    };
-    gServerMsgs.push(msg);
+function WorldUpdate(msg) {
+    if (msg.data.length > 0) {
+        // console.log("WorldUpdate data:", data.data)
+        for (let i = 0; i < msg.data.length; i++) {
+            let datum = msg.data[i];
+            let pl = CharactersMap[datum.id];
+            console.log("WorldUpdate id:", datum.id)
+            console.log("WorldUpdate cm:", CharactersMap)
+            if (pl !== undefined) {
+                
+                if (datum.x !== undefined) {
+                    pl.x = datum.x;
+                }
+                if (datum.y !== undefined) {
+                    pl.y = datum.y;
+                }
+                if (datum.alive !== undefined) {
+                    pl.alive = datum.alive;
+                }
+                if (datum.angle !== undefined) {
+                    pl.angle = datum.angle;
+                }
+            }
+        }
+    }
 }
 
 function RemovePlayer(id) {
     if (CharactersMap[id] !== undefined) {
         delete CharactersMap[id];
+    }
+}
+
+function PlayerStart(data) {
+    if (data.id !== undefined) {
+        let pl = CharactersMap[data.id];
+        if (pl !== undefined) {
+            if (data.alive !== undefined) {
+                pl.alive = data.alive;
+            }
+        }
     }
 }
 
