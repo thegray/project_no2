@@ -265,7 +265,7 @@ function bulletPlayersHit(bullet) {
                     return player.id;
                 }
             }
-            console.log("---------------------")
+            // console.log("---------------------")
         }
     }
     return null;
@@ -363,19 +363,19 @@ function inMessageHandler() {
                 }
             );
 
-            socket.on('player_angle',
-                function (msg) {
-                    let pl = getPlayer(socket.id);
-                    if (pl !== null && pl.getIsAlive()) {
-                        pl.setAngle(msg.angle);
-                        data = {
-                            id: pl.getId(),
-                            angle: pl.getAngle()
-                        }
-                        // io.sockets.emit('player_update', data);
-                    }
-                }
-            );
+            // socket.on('player_angle',
+            //     function (msg) {
+            //         let pl = getPlayer(socket.id);
+            //         if (pl !== null && pl.getIsAlive()) {
+            //             pl.setAngle(msg.angle);
+            //             data = {
+            //                 id: pl.getId(),
+            //                 angle: pl.getAngle()
+            //             }
+            //             // io.sockets.emit('player_update', data);
+            //         }
+            //     }
+            // );
 
 
 

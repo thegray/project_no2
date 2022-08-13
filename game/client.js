@@ -127,11 +127,11 @@ function EmitPlayerMoveEvent(dir) {
     });
 }
 
-function EmitPlayerAngleEvent(val) {
-    socket.emit('player_angle', {
-        angle: val
-    });
-}
+// function EmitPlayerAngleEvent(val) {
+//     socket.emit('player_angle', {
+//         angle: val
+//     });
+// }
 
 function EmitPlayerShootEvent(vector) {
     // logger("[emit][event] player_shoot: ", vector)

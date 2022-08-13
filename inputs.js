@@ -5,6 +5,7 @@ class inputs {
         this.moveRight = false;
         this.moveUp = false;
         this.moveDown = false;
+        this.angle = 0;
     }
 
     clone() {
@@ -15,6 +16,7 @@ class inputs {
 		object.moveRight = this.moveRight;
 		object.moveUp = this.moveUp;
 		object.moveDown = this.moveDown;
+        object.angle = this.angle;
 
 		return object;
     }

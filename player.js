@@ -122,6 +122,9 @@ class Player {
                 this.x += this.speed * dt;
             }
         }
+        if (inputs.angle) {
+            this.angle = inputs.angle;
+        }
     }
 
     // hitScan(){

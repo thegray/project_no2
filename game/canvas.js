@@ -37,7 +37,8 @@ function RetryGame() {
 }
 
 function charactersUpdate() {
-    mainChar.update(); // this just to calculate angle and send it to server
+    // calculate angle and update global input
+    gInput.angle = mainChar.update();
 }
 
 function charactersRender() {

@@ -143,9 +143,9 @@ function PlayerMoveEvent(dir) {
     EmitPlayerMoveEvent(dir);
 }
 
-function PlayerAngleEvent(val) {
-    EmitPlayerAngleEvent(val); // TODO: handle in gameloop
-}
+// function PlayerAngleEvent(val) {
+//     EmitPlayerAngleEvent(val); // TODO: handle in gameloop
+// }
 
 function PlayerShootEvent(val) {
     EmitPlayerShootEvent(val)

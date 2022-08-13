@@ -61,10 +61,12 @@ class character {
     update() {
         if (this.alive === true) {
             this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
-            PlayerAngleEvent(this.angle);
+            // PlayerAngleEvent(this.angle);
             //
             // this.normalizeMouseDirection = createVector(mouseX - this.x, mouseY - this.y).normalize();
+            return this.angle;
         }
+        return 0;
     }
 
     display() {
