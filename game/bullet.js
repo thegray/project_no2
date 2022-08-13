@@ -21,9 +21,11 @@ class bullet {
 
     display() {
         push()
-        stroke(this.color);
-        // fill(this.fillcolor);
-        fill(255);
+        // stroke(this.color);
+        //// fill(this.fillcolor);
+        // fill(255);
+        stroke(255);
+        fill(this.color);
         ellipse(this.x, this.y, this.size);
         pop();
     }
@@ -31,6 +33,7 @@ class bullet {
     update() {
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
+        // console.log(deltaTime, this.x, this.y)
         this.vx *= 0.994;
         this.vy *= 0.994;
     }

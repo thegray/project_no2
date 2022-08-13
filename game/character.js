@@ -72,7 +72,7 @@ class character {
             push()
             translate(this.x, this.y);
             rotate(this.angle);
-            translate(20, -10);
+            translate(25, -10);
             // noFill();
             stroke(this.color)
             triangle(
